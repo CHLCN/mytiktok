@@ -23,7 +23,7 @@ go build .
 ```bash
 go install github.com/beego/bee/v2@latest
 
-# 将$GOPATH/bin中的bee.exe放入GO的执行目录$GOROOT/bin
+将$GOPATH/bin中的bee.exe放入GO的执行目录$GOROOT/bin
 
 bee run
 # 此时就不需每次改动后端代码后重新build
