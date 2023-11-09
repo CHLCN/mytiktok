@@ -19,7 +19,7 @@
     </div>
     <div class="content">
       <Scroll class="Scroll"
-              :fixedHeight="180"
+              :fixedHeight=180
               @fixed="e => this.isFixed = e"
               @pulldown="loadData">
         <div class="desc">

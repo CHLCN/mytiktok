@@ -17,7 +17,7 @@
       </div>
     </div>
     <Scroll class="Scroll"
-            fixedHeight="100"
+            fixedHeight=100
             @fixed="e=>state.fixed = e"
             @pulldown="loadData">
       <div class="options">

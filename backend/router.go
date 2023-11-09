@@ -18,7 +18,8 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/feed/", jwt.AuthWithoutLogin(), controller.Feed)
 	apiRouter.GET("/user/", jwt.Auth(), controller.UserInfo)
 	apiRouter.POST("/user/register/", controller.Register)
-	apiRouter.POST("/user/login/", controller.Login)
+	apiRouter.POST("/user/password_login/", controller.PasswordLogin)
+	apiRouter.POST("/user/login", controller.Login)
 	apiRouter.POST("/publish/action/", jwt.AuthBody(), controller.Publish)
 	apiRouter.GET("/publish/list/", jwt.AuthWithoutLogin(), controller.PublishList)
 

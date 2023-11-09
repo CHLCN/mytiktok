@@ -34,7 +34,7 @@
 
  
 
-      <dy-button type="primary" :loading="loading" :active="false" :disabled="phone.length < 10" @click="getCode">
+      <dy-button type="primary" :loading="loading" :active="false" :disabled="phone.length < 11" @click="getCode">
         获取短信验证码
       </dy-button>
 
@@ -80,6 +80,7 @@ import Tooltip from "./components/Tooltip";
 import LoginInput from "./components/LoginInput";
 import Base from "./Base.js";
 import FromBottomDialog from "../../components/dialog/FromBottomDialog";
+import request from '../../utils/request'
 
 export default {
   name: "OtherLogin",
@@ -101,17 +102,34 @@ export default {
   },
   methods: {
     async getCode() {
-      let res = await this.check()
-      if (res) {
+        this.$store.state.phone=this.phone;
+      let isCheck = await this.check()
+      if (isCheck) {
         this.loading = true
-        setTimeout(() => {
-          this.$nav('/login/verification-code')
-        }, 2000)
+        let res = await request.post(
+            '/user/login',
+            {},
+            {
+                params:{
+                    username:this.phone,
+                }
+            }
+        )
+        this.$store.state.vcode=res.data.status_msg;
+        console.log(this.$store.state.vcode)
+
+        setTimeout(()=>{
+            this.$router.push("/login/verification-code")
+            this.loading=false
+        },1500)
+        
+        
+        
       }
     },
     async otherLogin() {
-      let res = await this.check()
-      if (res) {
+      let isCheck = await this.check()
+      if (isCheck) {
         this.isOtherLogin = true
       }
     }
@@ -158,7 +176,7 @@ export default {
 
         margin-bottom: 5rem;
         font-size: large;
-  }
+    }
   .options{
     margin-top: 15rem;  
   }

@@ -8,7 +8,7 @@
     <div class="content">
       <div class="desc">
         <div class="title">请输入验证码</div>
-        <div class="sub-title">验证码已通过短信发送到+86 13800138000</div>
+        <div class="sub-title">验证码已通过短信发送到+86 {{this.$store.state.phone}}</div>
       </div>
 
       <LoginInput autofocus type="code"
@@ -17,11 +17,7 @@
                   v-model:isSendVerificationCode="isSendVerificationCode"
                   @send="sendCode"
       />
-      <div class="options" v-if="showVoiceCode">
-        <span>
-          收不到短信？<span class="link" @click="getVoiceCode">获取语音验证码</span>
-        </span>
-      </div>
+      <div class="tip"  id="tip">验证码错误，请重试</div>
 
       <dy-button  type="primary"  :loading="loading" :active="false" :disabled="code.length < 4" @click="login">
         {{ loading ? '登录中' : '登录' }}
@@ -33,6 +29,7 @@
 <script>
 import Check from "../../components/Check";
 import LoginInput from "./components/LoginInput";
+import request from '../../utils/request'
 
 export default {
   name: "VerificationCode",
@@ -58,33 +55,53 @@ export default {
     }, 3000)
   },
   methods: {
-    getVoiceCode() {
-      return this.$showNoticeDialog('语音验证码',
-          '我们将以电话的方式告知你验证码，请注意接听',
-          '',
-          () => {
-            setTimeout(() => {
-              this.$showConfirmDialog('', '您的手机可能由于空号/欠费/停机无法收到验证码，请恢复手机号状态，如果' +
-                  '您因为换号无法收到验证码，可以尝试找回账号', '', () => {
-              }, null, '找回账号', '返回', '')
-            }, 2000)
-          },
-          '知道了'
-      )
-    },
+    // getVoiceCode() {
+    //   return this.$showNoticeDialog('语音验证码',
+    //       '我们将以电话的方式告知你验证码，请注意接听',
+    //       '',
+    //       () => {
+    //         setTimeout(() => {
+    //           this.$showConfirmDialog('', '您的手机可能由于空号/欠费/停机无法收到验证码，请恢复手机号状态，如果' +
+    //               '您因为换号无法收到验证码，可以尝试找回账号', '', () => {
+    //           }, null, '找回账号', '返回', '')
+    //         }, 2000)
+    //       },
+    //       '知道了'
+    //   )
+    // },
     //TODO loading样式不对
     async sendCode() {
       this.$showLoading()
       await this.$sleep(500)
       this.$hideLoading()
       this.isSendVerificationCode = true
+      let res = await request.post(
+            '/user/login',
+            {},
+            {
+                params:{
+                    username:this.phone,
+                }
+            }
+        )
     },
     login() {
       this.loading = true
-      setTimeout(() => {
+      if(this.code==this.$store.state.vcode){
+        setTimeout(() => {
         this.isSendVerificationCode = true
+        this.$router.push("/home")
         this.loading = false
       }, 1000)
+      }else{
+        
+        setTimeout(()=>{
+            document.getElementsByClassName("tip")[0].removeAttribute("id");
+            this.loading=false;
+        },500)
+        
+      }
+      
     }
   }
 }
@@ -105,6 +122,27 @@ export default {
   font-size: 14rem;
   background: white;
 
+  .content{
+    padding: 60rem 30rem;
+    .desc {
+      margin-bottom: 30rem;
+      margin-top: 30rem;
+      display: flex;
+    }
+    .title{
+    margin-bottom: 5rem;
+    font-size: large;
+    }
+
+    .tip{
+        color: red;
+        margin-top: 2rem;
+    }
+    #tip{
+        display: none;
+    }
+
+  }
   .options{
     margin-top: 10rem;
   }

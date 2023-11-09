@@ -121,7 +121,7 @@ watch(
       if (newVal && !props.list.length) {
         return emit('refresh')
       }
-      console.log('active', 'newVal', newVal, 'oldVal', oldVal)
+    //   console.log('active', 'newVal', newVal, 'oldVal', oldVal)
       if (newVal) {
         bus.emit(EVENT_KEY.CURRENT_ITEM, props.list[state.localIndex])
       }

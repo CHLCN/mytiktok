@@ -13,6 +13,8 @@
       <LoginInput autofocus type="phone" v-model="phone" placeholder="请输入手机号"/>
       <LoginInput autofocus class="mt1r" type="password" v-model="password" placeholder="请输入密码"/>
 
+      <div class="tip"  id="tip">账号或密码错误，请重试</div>
+
       <div class="protocol" :class="showAnim?'anim-bounce':''">
         <Tooltip style="top: -150%;left: -10rem;" v-model="showTooltip"/>
         <div class="left">
@@ -66,6 +68,7 @@ export default {
       password: '',
       code: '',
       notice: '',
+      isRight:true
     }
   },
   computed: {
@@ -82,7 +85,7 @@ export default {
       if (isCheck) {
         this.loading = true;
         let res = await request.post(
-            '/user/login',
+            '/user/password_login',
             {},
             {
                 params:{
@@ -91,10 +94,14 @@ export default {
                 }
             }
         )
-        console.log(res.data);
-        this.$router.push("/home")
+        if(res.data.status_code==0){
+            this.$router.push("/home")
+        }else{
+            document.getElementsByClassName("tip")[0].removeAttribute("id");
+            this.loading=false;
+        }
         
-        // console.log(this.phone)
+        // console.log(res)
         // console.log(this.password)
 
       }
@@ -125,7 +132,13 @@ export default {
       margin-top: 30rem;
       display: flex;
     }
-
+    .tip{
+        color: red;
+        margin-top: 2rem;
+    }
+    #tip{
+        display: none;
+    }
     .protocol{
         margin-top: 5rem;
         margin-bottom: 10rem;

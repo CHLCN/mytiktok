@@ -6,8 +6,10 @@ import (
 	"backend/util"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,6 +57,36 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
+	username := c.Query("username")
+	dftpassword := "123456"
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	vcode := fmt.Sprintf("%06v", rnd.Int31n(1000000))
+	// 使用中间件，做token权限校验
+	usi := service.GetUserServiceInstance()
+	user := usi.GetUserBasicInfoByName(username)
+	if username == user.Name {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 0, StatusMsg: vcode},
+		})
+	} else {
+		newUser := dao.UserBasicInfo{
+			Name:     username,
+			Password: service.EnCoder(dftpassword),
+		}
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 0, StatusMsg: vcode},
+		})
+		if usi.InsertUser(&newUser) != true {
+			fmt.Println("Insert Fail")
+			c.JSON(http.StatusOK, UserLoginResponse{
+				Response: Response{StatusCode: 1, StatusMsg: "Register Fail"},
+			})
+		}
+	}
+
+}
+
+func PasswordLogin(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 	encoderPassword := service.EnCoder(password)
