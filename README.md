@@ -1,7 +1,21 @@
 # mytiktok
+
 类抖音短视频平台
 
+## 更新仓库
+
+```bash
+cd mytiktok
+
+git add .
+
+git commit -m "更新记录xxxx"
+
+git push origin master
+```
+
 ## 运行前端
+
 ```bash
 cd frontend
 
@@ -11,6 +25,7 @@ npm run dev
 ```
 
 ## 运行后端
+
 ```bash
 cd backend
 
@@ -20,6 +35,7 @@ go build .
 ```
 
 ## 给后端配置热更新
+
 ```bash
 go install github.com/beego/bee/v2@latest
 
