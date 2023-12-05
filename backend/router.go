@@ -17,6 +17,9 @@ func initRouter(r *gin.Engine) {
 	// 基础接口
 	apiRouter.GET("/feed/", jwt.AuthWithoutLogin(), controller.Feed)
 	apiRouter.GET("/user/", jwt.Auth(), controller.UserInfo)
+	apiRouter.GET("/user/number_existence", controller.UserExistence)
+	apiRouter.POST("/user/getcode", controller.GenerateCode)
+	apiRouter.POST("/user/password_change", controller.PasswordChange)
 	apiRouter.POST("/user/register/", controller.Register)
 	apiRouter.POST("/user/password_login/", controller.PasswordLogin)
 	apiRouter.POST("/user/login", controller.Login)

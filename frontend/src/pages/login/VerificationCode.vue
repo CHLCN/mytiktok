@@ -55,21 +55,7 @@ export default {
     }, 3000)
   },
   methods: {
-    // getVoiceCode() {
-    //   return this.$showNoticeDialog('语音验证码',
-    //       '我们将以电话的方式告知你验证码，请注意接听',
-    //       '',
-    //       () => {
-    //         setTimeout(() => {
-    //           this.$showConfirmDialog('', '您的手机可能由于空号/欠费/停机无法收到验证码，请恢复手机号状态，如果' +
-    //               '您因为换号无法收到验证码，可以尝试找回账号', '', () => {
-    //           }, null, '找回账号', '返回', '')
-    //         }, 2000)
-    //       },
-    //       '知道了'
-    //   )
-    // },
-    //TODO loading样式不对
+
     async sendCode() {
       this.$showLoading()
       await this.$sleep(500)
@@ -80,10 +66,11 @@ export default {
             {},
             {
                 params:{
-                    username:this.phone,
+                    username:this.$store.state.phone,
                 }
             }
-        )
+        ) 
+        
     },
     login() {
       this.loading = true
@@ -142,9 +129,6 @@ export default {
         display: none;
     }
 
-  }
-  .options{
-    margin-top: 10rem;
   }
 
   .button{

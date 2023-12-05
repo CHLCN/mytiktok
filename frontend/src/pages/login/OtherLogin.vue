@@ -1,10 +1,10 @@
 <template>
   <div class="other-login" id="other-login">
-    <BaseHeader mode="light" backMode="dark" backImg="back">
+    <!-- <BaseHeader mode="light" backMode="dark" backImg="back">
       <template v-slot:right>
-        <span class="f14" @click="$nav('/login/help')">帮助与设置</span>
+        <span class="f14" @click="$nav('/home')">帮助与设置</span>
       </template>
-    </BaseHeader>
+    </BaseHeader> -->
     <div class="content">
       <div class="desc">
         <div class="title">登录后，体验完整功能</div>

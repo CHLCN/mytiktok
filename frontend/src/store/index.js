@@ -7,7 +7,8 @@ import resource from "../assets/data/resource";
 const store = Vuex.createStore({
   state: {
     vcode: "",
-    phone: "13800138000",
+    phone: "",
+    getPhone: false,
     bodyHeight: document.body.clientHeight,
     bodyWidth: document.body.clientWidth,
     maskDialog: false,

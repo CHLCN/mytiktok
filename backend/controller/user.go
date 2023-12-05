@@ -86,6 +86,24 @@ func Login(c *gin.Context) {
 
 }
 
+func GenerateCode(c *gin.Context) {
+	username := c.Query("username")
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	vcode := fmt.Sprintf("%06v", rnd.Int31n(1000000))
+	// 使用中间件，做token权限校验
+	usi := service.GetUserServiceInstance()
+	user := usi.GetUserBasicInfoByName(username)
+	if username == user.Name {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 0, StatusMsg: vcode},
+		})
+	} else {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+		})
+	}
+}
+
 func PasswordLogin(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
@@ -127,6 +145,40 @@ func UserInfo(c *gin.Context) {
 			User:     user,
 		})
 	}
+}
+
+func UserExistence(c *gin.Context) {
+	username := c.Query("username")
+	usi := service.GetUserServiceInstance()
+	user := usi.GetUserBasicInfoByName(username)
+	// log.Println("this is username: ", username)
+	// log.Println("this is user.Name: ", user.Name)
+	if username == user.Name {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 0, StatusMsg: "User exist!"},
+		})
+	} else {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist!"},
+		})
+	}
+}
+
+func PasswordChange(c *gin.Context) {
+	username := c.Query("username")
+	password := c.Query("password")
+	encoderPassword := service.EnCoder(password)
+	if err := dao.Db.Table("user").Where("name = ?", username).Update("password", encoderPassword).Error; err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusOK, UserResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "Password change failed"},
+		})
+	} else {
+		c.JSON(http.StatusOK, UserResponse{
+			Response: Response{StatusCode: 0, StatusMsg: "Password change Success"},
+		})
+	}
+
 }
 
 func Test(c *gin.Context) {

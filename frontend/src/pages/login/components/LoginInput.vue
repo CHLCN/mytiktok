@@ -68,7 +68,8 @@ export default {
   data() {
     return {
       isTyping: false,
-      verificationCodeBtnText: 60
+    //   verificationCodeBtnText: 60
+      verificationCodeBtnText: 6
     }
   },
   computed: {
@@ -86,7 +87,9 @@ export default {
       immediate: true,
       handler(newVal, oldVal) {
         if (newVal) {
-          this.verificationCodeBtnText = 60
+        //   this.verificationCodeBtnText = 60
+          this.verificationCodeBtnText = 6
+
           let ticker = setInterval(() => {
             if (this.verificationCodeBtnText > 0) {
               this.verificationCodeBtnText--
@@ -109,6 +112,7 @@ export default {
     send() {
       if (!this.isSendVerificationCode) {
         this.$emit('send')
+
       }
     }
   }
