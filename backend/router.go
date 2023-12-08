@@ -15,7 +15,8 @@ func initRouter(r *gin.Engine) {
 	apiRouter := r.Group("/douyin")
 
 	// 基础接口
-	apiRouter.GET("/feed/", jwt.AuthWithoutLogin(), controller.Feed)
+	apiRouter.GET("/video/recommended", jwt.AuthWithoutLogin(), controller.Feed)
+	//apiRouter.GET("/feed/", jwt.AuthWithoutLogin(), controller.Feed)
 	apiRouter.GET("/user/", jwt.Auth(), controller.UserInfo)
 	apiRouter.GET("/user/number_existence", controller.UserExistence)
 	apiRouter.POST("/user/getcode", controller.GenerateCode)

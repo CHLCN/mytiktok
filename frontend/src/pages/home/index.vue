@@ -133,10 +133,10 @@ const state = reactive({
   navIndex: 4,
   test: '',
   recommendList: [
-    // {
-    //   type: 'img',
-    //   src: `http://douyin.ttentau.top/0.mp4?vframe/jpg/offset/0/w/${document.body.clientWidth}`
-    // },
+    {
+      type: 'img',
+      src: `../../assets/img/icon/home/music3.png/offset/0/w/${document.body.clientWidth}`
+    },
     // {
     //   type: 'imgs',
     //   src: `http://douyin.ttentau.top/0.mp4?vframe/jpg/offset/0/w/${document.body.clientWidth}`
@@ -176,14 +176,28 @@ function delayShowDialog(cb) {
 }
 
 function setCurrentItem(item) {
-  if (state.currentItem.user.unique_id !== item.author.unique_id) {
+  // if (state.currentItem.user.unique_id !== item.author.unique_id) {
+  //   state.currentItem = {
+  //     ...item,
+  //     user: {
+  //       ...DefaultUser,
+  //       desc: item.author.desc,
+  //       nickname: item.author.nickname,
+  //       unique_id: item.author.unique_id,
+  //     },
+  //     isRequest: false,
+  //     post: [],
+  //   }
+  // }
+  // console.log('item', item)
+  if (state.currentItem.user.unique_id !== item.AuthorId) {
     state.currentItem = {
       ...item,
       user: {
         ...DefaultUser,
-        desc: item.author.desc,
-        nickname: item.author.nickname,
-        unique_id: item.author.unique_id,
+        // desc: item.author.desc,
+        // nickname: item.author.nickname,
+        unique_id: item.AuthorId,
       },
       isRequest: false,
       post: [],

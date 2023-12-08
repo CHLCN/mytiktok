@@ -93,17 +93,28 @@ function loadMore() {
 async function getData(refresh = false) {
   if (loading.value) return
   store.commit('setLoading', true)
-  let res = await props.api({pageNo: refresh ? 0 : state.pageNo, pageSize: state.pageSize})
+  let res = await props.api({})
+  // let res = await props.api({pageNo: refresh ? 0 : state.pageNo, pageSize: state.pageSize})
 //   console.log('getSlide4Data-', 'refresh', refresh, res)
   store.commit('setLoading', false)
-  if (res.code === 200) {
-    state.totalSize = res.data.total
+  // if (res.code === 200) {
+  //   state.totalSize = res.data.total
+  //   if (refresh) {
+  //     state.list = []
+  //   }
+  //   state.list = state.list.concat(res.data.list)
+  // } else {
+  //   state.pageNo--
+  // }
+  // console.log(res)
+  if (res.data.status_code === 0) {
+    state.totalSize = res.data.video_list.length
     if (refresh) {
       state.list = []
     }
-    state.list = state.list.concat(res.data.list)
+    state.list = state.list.concat(res.data.video_list)
   } else {
-    state.pageNo--
+    state.list = []
   }
 }
 

@@ -8,7 +8,7 @@ import (
 )
 
 func TestUploadVideo(t *testing.T) {
-	UploadVideo("VID_2023_1_29", 1, "测试视频1")
+	UploadVideo("VID_2023_1_29", 1, "测试视频1", "recommend-video")
 }
 
 func TestGetVideosByUserId(t *testing.T) {
@@ -22,7 +22,7 @@ func TestGetVideosByUserId(t *testing.T) {
 
 func TestGetVideosByLatestTime(t *testing.T) {
 	// 时区修正
-	mockTime, _ := time.ParseInLocation(config.GO_STARTER_TIME, "2023-01-29 21:20:04", time.Local)
+	mockTime, _ := time.ParseInLocation(config.GO_STARTER_TIME, "2023-12-7 21:20:04", time.Local)
 	log.Println(mockTime)
 	res, err := GetVideosByLatestTime(mockTime)
 	if err == nil {

@@ -93,6 +93,7 @@ export default {
         this.historyVideo.pageNo++
       }
       this.loadingVideo = true
+      // let res = await this.$api.videos.historyVideo({})
       let res = await this.$api.videos.historyVideo({pageNo: this.historyVideo.pageNo, pageSize: this.pageSize,})
       console.log(res)
       this.loadingVideo = false

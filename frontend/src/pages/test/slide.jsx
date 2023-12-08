@@ -65,6 +65,7 @@ export default class Slide {
       if (this.listMap.has(pageNo)) return
       this.loading = true
       let res = await this.config.request({pageNo, pageSize: this.pageSize})
+      // let res = await this.config.request({})
       this.loading = true
       if (res.code === 200) {
         this.total = res.data.total

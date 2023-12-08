@@ -99,7 +99,7 @@ watch(
     () => props.index,
     (newVal, oldVal) => {
       if (!props.list.length) return
-      console.log('watch-index', newVal, oldVal)
+      // console.log('watch-index', newVal, oldVal)
       bus.emit(EVENT_KEY.CURRENT_ITEM, props.list[newVal])
       bus.emit(EVENT_KEY.SINGLE_CLICK_BROADCAST, {
         uniqueId: props.uniqueId,
@@ -121,7 +121,7 @@ watch(
       if (newVal && !props.list.length) {
         return emit('refresh')
       }
-    //   console.log('active', 'newVal', newVal, 'oldVal', oldVal)
+      // console.log('active', 'newVal', newVal, 'oldVal', oldVal)
       if (newVal) {
         bus.emit(EVENT_KEY.CURRENT_ITEM, props.list[state.localIndex])
       }
@@ -155,9 +155,11 @@ function insertContent(list = props.list) {
       (item, index) => {
         //自动播放，当前条（可能是0，可能是其他），试了下用jq来找元素，然后trigger play事件，要慢点样
         let el = getInsEl(item, start + index, start + index === state.localIndex)
+
         wrapperEl.value.appendChild(el)
       }
   )
+  // console.log(wrapperEl.value)
   GM.$setCss(wrapperEl.value, 'transform', `translate3d(0px,${getSlideDistance(state, SlideType.VERTICAL)}px,  0px)`)
 
   if (state.localIndex > 2 && list.length > 5) {

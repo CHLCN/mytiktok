@@ -48,10 +48,10 @@ const state = reactive({
       <div class="description mb1r">
         {{ props.item.desc }}
       </div>
-      <div class="music" @click.stop="bus.emit('nav','/home/music')">
-        <img src="../../assets/img/icon/music.svg" alt="" class="music-image">
-        <BaseMarquee :text="props.item.music.title"/>
-      </div>
+<!--      <div class="music" @click.stop="bus.emit('nav','/home/music')">-->
+<!--        <img src="../../assets/img/icon/music.svg" alt="" class="music-image">-->
+<!--        <BaseMarquee :text="props.item.music.title"/>-->
+<!--      </div>-->
     </div>
     <div v-else class="comment-status">
       <div class="comment">

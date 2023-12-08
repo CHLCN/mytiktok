@@ -83,7 +83,7 @@ const state = reactive({
   //用于改变zindex的层级到上层，反正比slide高就行。不然摸不到subType.
   subTypeIsTop: false,
   totalSize: 0,
-  pageSize: 10,
+  pageSize: 30,
   pageNo: 0,
 })
 
@@ -94,8 +94,10 @@ async function getData(refresh = false) {
   // }
   if (state.loading) return
   state.loading = true
-  let res = await api.videos.recommended({pageNo: refresh ? 0 : state.pageNo, pageSize: state.pageSize})
   console.log('loadMore-', 'refresh', refresh, res)
+  let res = await api.videos.recommended({pageNo: refresh ? 0 : state.pageNo, pageSize: state.pageSize})
+  // let res = await api.videos.recommended({})
+
   state.loading = false
   if (res.code === 200) {
     state.totalSize = res.data.total

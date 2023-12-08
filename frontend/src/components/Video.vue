@@ -122,6 +122,7 @@ import Dom from "../utils/dom";
 import BaseMusic from "./BaseMusic";
 import {mapState} from "vuex";
 import Loading from "./Loading";
+import resource from "../assets/data/resource";
 
 export default {
   name: "Video",
@@ -135,12 +136,14 @@ export default {
       type: Object,
       default: () => {
         return {}
+        // return resource.videos
       }
     },
     index: {
       type: Number,
       default: () => {
         return -1
+        // return 1
       }
     },
     //用于第一条数据，自动播放，如果都用事件去触发播放，有延迟
@@ -227,8 +230,10 @@ export default {
     // eventTester("loadstart", '客户端开始请求数据'); //客户端开始请求数据
     // eventTester("abort", '客户端主动终止下载（不是因为错误引起）'); //客户端主动终止下载（不是因为错误引起）
     // eventTester("loadstart", '客户端开始请求数据'); //客户端开始请求数据
+
     eventTester("progress", '客户端正在请求数据'); //客户端正在请求数据
-    // // eventTester("suspend", '延迟下载'); //延迟下载
+
+    // eventTester("suspend", '延迟下载'); //延迟下载
     // eventTester("abort", '客户端主动终止下载（不是因为错误引起），'); //客户端主动终止下载（不是因为错误引起），
     // eventTester("error", '请求数据时遇到错误'); //请求数据时遇到错误
     // eventTester("stalled", '网速失速'); //网速失速
@@ -236,8 +241,10 @@ export default {
     // eventTester("pause", 'pause()触发'); //pause()触发
     // eventTester("loadedmetadata", '成功获取资源长度'); //成功获取资源长度
     // eventTester("loadeddata"); //
+
     eventTester("waiting", '等待数据，并非错误'); //等待数据，并非错误
     eventTester("playing", '开始回放'); //开始回放
+
     // eventTester("canplay", '/可以播放，但中途可能因为加载而暂停'); //可以播放，但中途可能因为加载而暂停
     // eventTester("canplaythrough", '可以播放，歌曲全部加载完毕'); //可以播放，歌曲全部加载完毕
     // eventTester("seeking", '寻找中'); //寻找中
@@ -251,6 +258,7 @@ export default {
     let videoWrapper = new Dom(this.$refs.videoWrapper)
     videoWrapper.on('play', this.play)
     videoWrapper.on('stop', this.stop)
+
   },
   methods: {
     dbClick(e) {
@@ -315,6 +323,7 @@ export default {
       }
       this.$refs.video.volume = 1
       this.$refs.video.play()
+      // console.log("play video")
     },
     stop() {
       new Dom(`.${this.name}-marquee`).trigger('stop')

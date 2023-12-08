@@ -3,8 +3,8 @@
     <Loading v-if="loading" style="position: absolute"/>
     <!--    <video :src="item.video + '?v=123'"-->
     <video
-        :src="item.video"
-           :poster="item.video + videoPoster"
+        :src="item.play_url"
+           :poster="item.play_url + videoPoster"
            ref="video"
            muted
            preload
@@ -166,7 +166,7 @@ export default {
   },
   mounted() {
     // console.log('video', this.localItem.id)
-    // console.log(this.commentVisible)
+    // console.log(this.$refs)
     this.height = document.body.clientHeight
     this.width = document.body.clientWidth
     let video = this.$refs.video

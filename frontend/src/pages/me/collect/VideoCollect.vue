@@ -50,6 +50,7 @@ export default {
       }
       this.loading = true
       let res = await this.$api.videos.my({pageNo: this.pageNo, pageSize: this.pageSize,})
+      // let res = await this.$api.videos.my({})
       this.loading = false
       if (res.code === this.SUCCESS) {
         this.videos = this.videos.concat(res.data.list)

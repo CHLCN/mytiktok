@@ -303,6 +303,8 @@ watch(() => props.active,
 onMounted(() => {
   state.videos.my.list = resource.my
   state.videos.my.total = resource.my.length
+  // state.videos.my.list = resource.videos
+  // state.videos.my.total = resource.videos.length
 })
 
 function stop(e) {

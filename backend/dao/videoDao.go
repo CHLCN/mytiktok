@@ -12,6 +12,7 @@ type Video struct {
 	Title     string `json:"title"`
 	PlayUrl   string `json:"play_url"`
 	CoverUrl  string `json:"cover_url"`
+	Type      string `json:"type"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -32,7 +33,7 @@ func SaveVideo(video Video) error {
 }
 
 // UploadVideo 上传视频
-func UploadVideo(videoName string, authorId int64, videoTitle string) error {
+func UploadVideo(videoName string, authorId int64, videoTitle string, Type string) error {
 	var video Video
 	video.AuthorId = authorId
 	video.Title = videoTitle
@@ -40,6 +41,7 @@ func UploadVideo(videoName string, authorId int64, videoTitle string) error {
 	video.CoverUrl = video.PlayUrl + config.COVER_URL_SUFFIX
 	video.CreatedAt = time.Now()
 	video.UpdatedAt = time.Now()
+	video.Type = Type
 	return SaveVideo(video)
 }
 

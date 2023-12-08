@@ -27,12 +27,14 @@ export default {
     SlideColumnVirtualList,
     SlideItem,
     Indicator,
-    'Video1': Video,
+    // 'Video1': Video,
+    Video,
     Footer,
     Mask,
     NoMore,
     'dy-back': Back,
     Loading,
+    // BaseButton,
     'dy-button': BaseButton
   },
   data() {

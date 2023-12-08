@@ -43,7 +43,7 @@ func (videoService *VideoServiceImpl) Publish(data *multipart.FileHeader, title 
 	if err != nil {
 		return err
 	}
-	err = dao.UploadVideo(videoName, userId, title)
+	err = dao.UploadVideo(videoName, userId, title, "recommend-video")
 	if err != nil {
 		log.Println("视频存入数据库失败！")
 		return err

@@ -104,7 +104,7 @@ CREATE TABLE `relation` (
 -- ----------------------------
 -- Records of relation
 -- ----------------------------
-
+INSERT INTO `relation` VALUES ('3', '2', '3','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
 -- ----------------------------
 -- Table structure for `user`
 -- ----------------------------
@@ -135,6 +135,7 @@ CREATE TABLE `video` (
   `title` varchar(255) NOT NULL COMMENT '视频标题',
   `play_url` varchar(255) NOT NULL COMMENT '视频播放地址',
   `cover_url` varchar(255) NOT NULL COMMENT '视频封面地址',
+  `type` varchar(255) NOT NULL COMMENT '视频类型',
   `created_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '视频上传时间',
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '视频更新时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -145,3 +146,5 @@ CREATE TABLE `video` (
 -- ----------------------------
 -- Records of video
 -- ----------------------------
+INSERT INTO `video` VALUES ('3', '2', 'TestVideo', '/src/assets/video/15.mp4', 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg','recommend-video','2016-3-05 23:50:37','2016-3-17 23:50:37');
+# INSERT INTO `video` VALUES ('2', '2', 'TestVideoTwo', './frontend/src/assets/video/1.mp4', 'http://p3.douyinpic.com/obj/c8510002be9a3a61aad2?from=116350172','2022-3-05 23:50:37','2022-3-17 23:50:37');
