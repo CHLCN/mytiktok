@@ -64,7 +64,7 @@
               <span>{{ lVideo.address }}</span>
             </div>
           </div>
-          <div class="name mb1r fb" @click.stop="$emit('goUserInfo')">@{{ lVideo.author.nickname }}</div>
+          <div class="name mb1r fb" @click.stop="$emit('goUserInfo')">@{{ lVideo.author.name }}</div>
           <div class="description mb1r">
             {{ lVideo.desc }}
           </div>

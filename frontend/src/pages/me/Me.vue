@@ -501,7 +501,7 @@ export default {
           let res
           switch (newVal) {
             case 0:
-              res = await this.$api.videos.my({pageNo: this.videos.my.pageNo, pageSize: this.pageSize,})
+              res = await this.$api.videos.my({})
             //   console.log(res)
               if (res.code === this.SUCCESS) this.videos.my = res.data
               break

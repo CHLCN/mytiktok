@@ -16,23 +16,8 @@ type FeedResponse struct {
 
 // Feed 不限制登录状态，返回按投稿时间倒序的视频列表，视频数由服务端控制，单次最多30个
 func Feed(c *gin.Context) {
-	//latestTime := c.Query("latest_time")
-	//log.Println("返回视频的最新投稿时间戳:", latestTime)
 	var convTime time.Time
-	//if latestTime != "0" {
-	//	t, _ := strconv.ParseInt(latestTime, 10, 64)
-	//	if t > math.MaxInt32 {
-	//		convTime = time.Now()
-	//	} else {
-	//		convTime = time.Unix(t, 0)
-	//	}
-	//} else {
-	//	convTime = time.Now()
-	//}
 	convTime = time.Now()
-	//log.Println("返回视频的最新投稿时间:", convTime)
-	// 获取登录用户的 id（等待用户模块存入用户id到context）
-	//userId, _ := strconv.ParseInt(c.GetString("userId"), 10, 64)
 	userId := c.GetInt64("userId")
 	videoService := service.GetVideoServiceInstance()
 	videos, nextTime, err := videoService.Feed(convTime, userId)

@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="description">
-              <p class="name f22 mt1r mb1r">{{ localAuthor.nickname }}</p>
+              <p class="name f22 mt1r mb1r">{{ localAuthor.name }}</p>
               <div class="certification" v-if="localAuthor.certification ">
                 <img src="../../assets/img/icon/me/certification.webp">
                 {{ localAuthor.certification }}

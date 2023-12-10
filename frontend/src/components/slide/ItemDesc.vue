@@ -44,9 +44,9 @@ const state = reactive({
           <span>{{ props.item.address }}</span>
         </div>
       </div>
-      <div class="name mb1r fb" @click.stop="$emit('goUserInfo')">@{{ props.item.author.nickname }}</div>
+      <div class="name mb1r fb" @click.stop="$emit('goUserInfo')">@{{ props.item.author.name }}</div>
       <div class="description mb1r">
-        {{ props.item.desc }}
+        {{ props.item.title }}
       </div>
 <!--      <div class="music" @click.stop="bus.emit('nav','/home/music')">-->
 <!--        <img src="../../assets/img/icon/music.svg" alt="" class="music-image">-->

@@ -113,6 +113,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户 id，自增主键',
   `name` varchar(255) NOT NULL COMMENT '用户名',
   `password` varchar(255) NOT NULL COMMENT '用户密码',
+  `avatar` varchar(255) NOT NULL COMMENT '用户头像',
   `created_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -122,8 +123,9 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('2', '15858228936', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441', '2023-12-05 23:50:37', '2023-12-05 23:50:37');
-INSERT INTO `user` VALUES ('3', '13800138000', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `user` VALUES ('1', '13731992346', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','/src/assets/img/icon/avatar/1.png','2023-12-06 23:50:37', '2023-12-06 23:50:37');
+INSERT INTO `user` VALUES ('2', '15858228936', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','/src/assets/img/icon/avatar/2.png','2023-12-05 23:50:37', '2023-12-05 23:50:37');
+INSERT INTO `user` VALUES ('3', '13800138000', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','/src/assets/img/icon/avatar/3.png', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
 
 -- ----------------------------
 -- Table structure for `video`
@@ -146,5 +148,7 @@ CREATE TABLE `video` (
 -- ----------------------------
 -- Records of video
 -- ----------------------------
-INSERT INTO `video` VALUES ('3', '2', 'TestVideo', '/src/assets/video/15.mp4', 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg','recommend-video','2016-3-05 23:50:37','2016-3-17 23:50:37');
-# INSERT INTO `video` VALUES ('2', '2', 'TestVideoTwo', './frontend/src/assets/video/1.mp4', 'http://p3.douyinpic.com/obj/c8510002be9a3a61aad2?from=116350172','2022-3-05 23:50:37','2022-3-17 23:50:37');
+INSERT INTO `video` VALUES ('1', '2', 'TestVideo1', '/src/assets/video/1.mp4', 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg','recommend-video','2016-3-05 23:50:37','2016-3-17 23:50:37');
+INSERT INTO `video` VALUES ('2', '2', 'TestVideo2', '/src/assets/video/2.mp4', 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg','recommend-video','2017-3-05 23:50:37','2017-3-17 23:50:37');
+INSERT INTO `video` VALUES ('3', '2', 'TestVideo3', '/src/assets/video/3.mp4', 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg','recommend-video','2018-3-05 23:50:37','2018-3-17 23:50:37');
+INSERT INTO `video` VALUES ('4', '3', 'TestVideo4', '/src/assets/video/4.mp4', 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg','recommend-video','2019-3-05 23:50:37','2019-3-17 23:50:37');

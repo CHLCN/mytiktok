@@ -57,7 +57,7 @@ function showComments() {
       <img class="avatar" :src="props.item.author.avatar" alt=""
            @click.stop="bus.emit(EVENT_KEY.GO_USERINFO)">
       <transition name="fade">
-        <div v-if="!props.item.isAttention" @click.stop="attention" class="options">
+        <div v-if="!props.item.author.is_follow" @click.stop="attention" class="options">
           <img class="no" src="../../assets/img/icon/add-light.png" alt="">
           <img class="yes" src="../../assets/img/icon/ok-red.png" alt="">
         </div>

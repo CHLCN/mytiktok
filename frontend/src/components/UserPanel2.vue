@@ -30,7 +30,7 @@
               </div>
             </div>
             <div class="description">
-              <p class="name f22 mt1r mb1r">{{ state.localAuthor.nickname }}</p>
+              <p class="name f22 mt1r mb1r">{{ state.localAuthor.name }}</p>
               <div class="certification" v-if="state.localAuthor.certification ">
                 <img src="../../assets/img/icon/me/certification.webp">
                 {{ state.localAuthor.certification }}

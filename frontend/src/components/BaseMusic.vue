@@ -1,6 +1,6 @@
 <template>
   <div class="music-wrapper">
-    <img class="music" :src="props.item.music?.cover" :style="style"
+    <img class="music" src="/src/assets/img/music-cover/music.jpg" :style="style"
          @click.stop="bus.emit(EVENT_KEY.NAV,{path:'/home/music',query:{id:props.item.id}})">
   </div>
 </template>
