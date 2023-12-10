@@ -8,8 +8,8 @@ export default {
     // console.log('api - params',params)
     return request({url: '/me/my', method: 'get', params, data})
   },
-  private(params, data) {
-    return request({url: '/me/private1', method: 'get', params, data})
+  mypost(params, data) {
+    return request({url: '/me/mypost', method: 'get', params, data})
   },
   like(params, data) {
     return request({url: '/me/like', method: 'get', params, data})

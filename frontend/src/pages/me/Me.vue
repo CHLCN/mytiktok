@@ -74,27 +74,11 @@
                     </template>
                     {{ userinfo.city }}
                   </div>
-                  <div class="item" v-if="userinfo.school.name">
-                    {{ userinfo.school.name }}
-                  </div>
+<!--                  <div class="item" v-if="userinfo.school.name">-->
+<!--                    {{ userinfo.school.name }}-->
+<!--                  </div>-->
                 </div>
 
-              </div>
-              <div class="other">
-                <div class="item" @click="$no">
-                  <img src="../../assets/img/icon/me/shopping-cart-white.png" alt="">
-                  <div class="right">
-                    <div class="top">抖音商城</div>
-                    <div class="bottom">发现超值好物</div>
-                  </div>
-                </div>
-                <div class="item" @click="$nav('/me/my-music')">
-                  <img src="../../assets/img/icon/me/music-white.png" alt="">
-                  <div class="right">
-                    <div class="top">我的音乐</div>
-                    <div class="bottom">已收藏20首</div>
-                  </div>
-                </div>
               </div>
               <div class="my-buttons">
                 <div class="button" @click="$nav('/me/edit-userinfo')">
@@ -102,7 +86,6 @@
                 </div>
                 <div class="button" @click="$nav('/people/find-acquaintance')">
                   <span>添加朋友</span>
-                  <div class="not-read"></div>
                 </div>
               </div>
             </div>
@@ -110,7 +93,7 @@
           <Indicator
               name="videoList"
               tabStyleWidth="25%"
-              :tabTexts="['作品','私密','喜欢','收藏']"
+              :tabTexts="['作品','喜欢','收藏']"
               v-model:active-index="contentIndex">
           </Indicator>
           <SlideRowList
@@ -121,7 +104,7 @@
             <SlideItem class="SlideItem"
                        @scroll="scroll"
                        :style="SlideItemStyle">
-              <Posters v-if="videos.my.total !== -1" :list="videos.my.list"></Posters>
+              <Posters v-if="videos.my.list.length !== -1" :list="videos.my.list"></Posters>
               <Loading v-if="loadings.loading0" :is-full-screen="false"></Loading>
               <no-more v-else/>
             </SlideItem>
@@ -397,6 +380,12 @@ export default {
           }
         },
       },
+      userinfo:{
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
       pageSize: 15,
       initSlideHeight: 0,
       loadings: {
@@ -426,9 +415,9 @@ export default {
       if (this.tempScroll || this.isScroll) return {overflow: 'auto'}
       return {overflow: 'hidden'}
     },
-    ...mapState({
-      userinfo: 'userinfo',
-    })
+    // ...mapState({
+    //   userinfo: 'userinfo',
+    // })
   },
   watch: {
     contentIndex(newVal, oldVal) {
@@ -444,6 +433,7 @@ export default {
       this.initSlideHeight = this.bodyHeight - 50 - this.refs.descHeight - 50
       this.canTransformY = this.refs.descHeight - this.floatHeight
       this.changeIndex(0, null)
+      this.getUserInfo()
     })
     this.videoItemHeight = this.bodyWidth / 3 * 1.2 + 2
     bus.on('baseSlide-moved', () => this.canScroll = false)
@@ -463,6 +453,12 @@ export default {
         this.$stopPropagation(e)
       }
     },
+
+    async getUserInfo(){
+      let res =await this.$api.videos.my({user_id:2})
+      if (res.status === this.SUCCESS) this.userinfo = res.data.user
+    },
+
     async getScrollAreaHeight(index = this.contentIndex) {
       let scrollAreaHeight = 0
       if (index === 3) {
@@ -501,9 +497,10 @@ export default {
           let res
           switch (newVal) {
             case 0:
-              res = await this.$api.videos.my({})
-            //   console.log(res)
-              if (res.code === this.SUCCESS) this.videos.my = res.data
+              // res = await this.$api.videos.my({pageNo: this.videos.my.pageNo, pageSize: this.pageSize,})
+              res = await this.$api.videos.mypost({user_id:2})
+              console.log(res)
+              if (res.status === this.SUCCESS) this.videos.my.list = res.data.video_list
               break
             case 1:
               res = await this.$api.videos.private({pageNo: this.videos.private.pageNo, pageSize: this.pageSize,})
@@ -553,12 +550,9 @@ export default {
             res = await this.$api.videos.my({pageNo: videoOb.pageNo, pageSize: this.pageSize,})
             break
           case 1:
-            res = await this.$api.videos.private({pageNo: videoOb.pageNo, pageSize: this.pageSize,})
-            break
-          case 2:
             res = await this.$api.videos.like({pageNo: videoOb.pageNo, pageSize: this.pageSize,})
             break
-          case 3:
+          case 2:
             res = await this.$api.videos.collect({pageNo: videoOb.pageNo, pageSize: this.pageSize,})
             break
         }

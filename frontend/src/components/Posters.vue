@@ -2,14 +2,14 @@
   <div class="posters">
     <div class="poster-item" v-for="(i,index) in list" @click="$no">
       <!--       @click="$nav('/video-detail')"-->
-      <img class="poster" v-lazy="$imgPreview(i.cover)" alt="">
+      <img class="poster" v-lazy="$imgPreview(i.cover_url)" alt="">
       <div class="num" v-if="mode === 'normal'">
         <img class="love" src="../assets/img/icon/love.svg" alt="">
         <span>{{ formatNumber(i.digg_count) }}</span>
       </div>
       <div class="date" v-if="mode === 'date'">
-        <div class="day">{{ getDay(i.create_time) }}</div>
-        <div class="month">{{ getMonth(i.create_time) }}</div>
+        <div class="day">{{ getDay(i.CreatedAt) }}</div>
+        <div class="month">{{ getMonth(i.CreatedAt) }}</div>
       </div>
       <template v-if="mode === 'music'">
         <div class="music" v-if="index === 0">

@@ -113,6 +113,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户 id，自增主键',
   `name` varchar(255) NOT NULL COMMENT '用户名',
   `password` varchar(255) NOT NULL COMMENT '用户密码',
+  `nickname` varchar(255) NOT NULL COMMENT '用户昵称',
   `avatar` varchar(255) NOT NULL COMMENT '用户头像',
   `created_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录创建时间',
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
@@ -123,9 +124,9 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '13731992346', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','/src/assets/img/icon/avatar/1.png','2023-12-06 23:50:37', '2023-12-06 23:50:37');
-INSERT INTO `user` VALUES ('2', '15858228936', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','/src/assets/img/icon/avatar/2.png','2023-12-05 23:50:37', '2023-12-05 23:50:37');
-INSERT INTO `user` VALUES ('3', '13800138000', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','/src/assets/img/icon/avatar/3.png', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `user` VALUES ('1','13731992346','b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','TWICE','/src/assets/img/icon/avatar/1.png','2023-12-06 23:50:37', '2023-12-06 23:50:37');
+INSERT INTO `user` VALUES ('2','15858228936','b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','XG','/src/assets/img/icon/avatar/2.png','2023-12-05 23:50:37', '2023-12-05 23:50:37');
+INSERT INTO `user` VALUES ('3','13800138000','b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441','ITZY','/src/assets/img/icon/avatar/3.png', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
 
 -- ----------------------------
 -- Table structure for `video`

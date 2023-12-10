@@ -9,6 +9,7 @@ type UserBasicInfo struct {
 	Id        int64
 	Name      string
 	Password  string
+	Nickname  string
 	Avatar    string
 	CreatedAt time.Time `gorm:"CreatedAt" column:"CreatedAt"`
 	UpdatedAt time.Time `gorm:"CreatedAt" column:"UpdatedAt"`

@@ -75,6 +75,7 @@ func (usi *UserServiceImpl) GetUserLoginInfoById(id int64) (User, error) {
 		FollowCount:     1,
 		FollowerCount:   99999,
 		IsFollow:        false,
+		Nickname:        "xg",
 		Avatar:          "config.CUSTOM_DOMAIN + config.OSS_USER_AVATAR_DIR",
 		BackgroundImage: config.BG_IMAGE,
 		Signature:       config.SIGNATURE,
@@ -91,6 +92,7 @@ func (usi *UserServiceImpl) GetUserLoginInfoById(id int64) (User, error) {
 	user.Id = u.Id
 	user.Name = u.Name
 	user.Avatar = u.Avatar
+	user.Nickname = u.Nickname
 	userService := GetUserServiceInstance()
 	var wg sync.WaitGroup
 	wg.Add(5)
@@ -155,6 +157,7 @@ func (usi *UserServiceImpl) GetUserLoginInfoByIdWithCurId(id int64, curId int64)
 		FollowCount:     1,
 		FollowerCount:   99999,
 		IsFollow:        false,
+		Nickname:        "once",
 		Avatar:          "config.CUSTOM_DOMAIN + config.OSS_USER_AVATAR_DIR",
 		BackgroundImage: config.BG_IMAGE,
 		Signature:       config.SIGNATURE,
@@ -171,6 +174,7 @@ func (usi *UserServiceImpl) GetUserLoginInfoByIdWithCurId(id int64, curId int64)
 	user.Id = u.Id
 	user.Name = u.Name
 	user.Avatar = u.Avatar
+	user.Nickname = u.Nickname
 	userService := GetUserServiceInstance()
 
 	var wg sync.WaitGroup
