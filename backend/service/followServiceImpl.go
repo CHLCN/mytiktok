@@ -573,6 +573,22 @@ func (followService *FollowServiceImp) BuildUser(userId int64, users []User, ids
 			return err3
 		}
 
+		// 用户nickname赋值
+		var err4 error
+		users[i].Nickname, err4 = folowDao.GetUserNickName(ids[i])
+		if nil != err4 {
+			log.Println(err4)
+			return err4
+		}
+
+		// 用户avatar赋值
+		var err5 error
+		users[i].Avatar, err5 = folowDao.GetUserAvatar(ids[i])
+		if nil != err5 {
+			log.Println(err5)
+			return err5
+		}
+
 		// 根据传入的buildtype决定是哪种业务的user构建
 		if buildtype == 1 {
 			// 粉丝用户的isfollow属性需要调用接口再确认一下
@@ -620,6 +636,22 @@ func (followService *FollowServiceImp) BuildFriendUser(userId int64, friendUsers
 		if nil != err3 {
 			log.Println(err3.Error())
 			return err3
+		}
+
+		// 用户nickname赋值
+		var err4 error
+		friendUsers[i].Nickname, err4 = followDao.GetUserNickName(ids[i])
+		if nil != err4 {
+			log.Println(err4)
+			return err4
+		}
+
+		// 用户avatar赋值
+		var err5 error
+		friendUsers[i].Avatar, err5 = followDao.GetUserAvatar(ids[i])
+		if nil != err5 {
+			log.Println(err5)
+			return err5
 		}
 
 		// 好友其他属性赋值

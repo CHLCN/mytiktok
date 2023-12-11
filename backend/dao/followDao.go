@@ -226,3 +226,31 @@ func (*FollowDao) GetUserName(userId int64) (string, error) {
 
 	return name, nil
 }
+
+// GetUserNickName 在user表中根据id查询用户昵称，放在followDao文件中并不妥当，后续可能废弃
+func (*FollowDao) GetUserNickName(userId int64) (string, error) {
+	var nickname string
+
+	err := Db.Table("user").Where("id = ?", userId).Pluck("nickname", &nickname).Error
+
+	if nil != err {
+		log.Println(err.Error())
+		return "", err
+	}
+
+	return nickname, nil
+}
+
+// GetUserNickName 在user表中根据id查询用户头像，放在followDao文件中并不妥当，后续可能废弃
+func (*FollowDao) GetUserAvatar(userId int64) (string, error) {
+	var avatar string
+
+	err := Db.Table("user").Where("id = ?", userId).Pluck("avatar", &avatar).Error
+
+	if nil != err {
+		log.Println(err.Error())
+		return "", err
+	}
+
+	return avatar, nil
+}
