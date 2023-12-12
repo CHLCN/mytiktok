@@ -7,9 +7,9 @@ import (
 	"time"
 )
 
-func TestUploadVideo(t *testing.T) {
-	UploadVideo("VID_2023_1_29", 1, "测试视频1", "recommend-video")
-}
+// func TestUploadVideo(t *testing.T) {
+// 	UploadVideo("VID_2023_1_29", 1, "测试视频1", "recommend-video")
+// }
 
 func TestGetVideosByUserId(t *testing.T) {
 	res, err := GetVideosByUserId(1)

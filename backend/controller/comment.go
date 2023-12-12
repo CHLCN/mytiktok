@@ -92,7 +92,9 @@ func CommentAction(c *gin.Context) {
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
-	userId := c.GetInt64("userId")
+	strUserId := c.Query("user_id")
+	//likeCnt:=dao.VideoLikedCount()
+	userId, _ := strconv.ParseInt(strUserId, 10, 64)
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusOK, CommentListResponse{

@@ -13,7 +13,7 @@
     <template v-slot:header>
       <div class="title">
         <dy-back mode="dark" img="close" direction="right" style="opacity: 0" />
-        <span>2.7w条评论</span>
+        <span>{{ comments.length }}条评论</span>
         <dy-back
           mode="dark"
           img="close"
@@ -29,13 +29,15 @@
             <!--             v-longpress="e => showOptions(item)"-->
             <div class="main">
               <div class="content">
-                <img :src="item.avatar" alt="" class="head-image" />
+                <img :src="item.user.avatar" alt="" class="head-image" />
                 <div class="comment-container">
-                  <div class="name">{{ item.name }}</div>
-                  <div class="detail">{{ item.text }}</div>
+                  <div class="name">{{ item.user.nickname }}</div>
+                  <div class="detail">{{ item.content }}</div>
                   <div class="time-wrapper">
                     <div class="left">
-                      <div class="time">{{ $time(item.time) }} · 上海</div>
+                      <div class="time">
+                        {{ $time(item.create_date) }} · 安徽
+                      </div>
                       <div class="reply-text">回复</div>
                     </div>
                     <div class="love" @click="loved(item)">
@@ -55,48 +57,6 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="replies">
-              <div class="reply" v-for="child in item.children">
-                <!--                 v-longpress="e => showOptions(child)"-->
-                <div class="content">
-                  <img :src="child.avatar" alt="" class="head-image" />
-                  <div class="comment-container">
-                    <div class="name">
-                      {{ child.name }}
-                      <div class="reply-user" v-if="child.replay"></div>
-                      {{ child.replay }}
-                    </div>
-                    <div class="detail">{{ child.text }}</div>
-                    <div class="time-wrapper">
-                      <div class="left">
-                        <div class="time">{{ $time(item.time) }} · 上海</div>
-                        <div class="reply-text">回复</div>
-                      </div>
-                      <div class="love" @click="loved(item)">
-                        <img
-                          v-show="item.isLoved"
-                          src="../assets/img/icon/components/like-red-small.png"
-                          alt=""
-                          class="love-image"
-                        />
-                        <img
-                          v-show="!item.isLoved"
-                          src="../assets/img/icon/components/like-gray-small.png"
-                          alt=""
-                          class="love-image"
-                        />
-                        <span>{{ formatNumber(item.loveNum) }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="more">
-                <div class="gang"></div>
-                <span>展开更多回复</span>
-                <div class="arrow"></div>
               </div>
             </div>
           </div>
@@ -169,6 +129,8 @@ import { mapState } from "vuex";
 import FromBottomDialog from "./dialog/FromBottomDialog";
 import Loading from "./Loading";
 import Search from "./Search";
+import request from "../utils/request";
+import bus, { EVENT_KEY } from "@/utils/bus";
 
 export default {
   name: "Comment",
@@ -221,14 +183,19 @@ export default {
       showPrivateChat: false,
       isInput: false,
       isCall: false,
+      videoId: 0,
     };
   },
   mounted() {
+    bus.on(EVENT_KEY.OPEN_COMMENTS, this.getID);
     this.getData();
-    // var p = document.getElementById("myinput");
-    // p.focus();
   },
   methods: {
+    getID(itemId) {
+      this.videoId = itemId;
+      // console.log('Received OPEN_COMMENTS event with itemId:', itemId);
+      // 在这里可以访问到 props.item.id 的值，即 itemId
+    },
     send() {
       this.comments.push({
         id: "2",
@@ -246,110 +213,103 @@ export default {
     },
     async getData() {
       await this.$sleep(500);
-      this.comments = [
+      let res = await request.get(
+        "/comment/list/",
         {
-          id: "1",
-          avatar: new URL("../assets/img/icon/avatar/1.png", import.meta.url)
-            .href,
-          name: "彭雨晏",
-          text: "这到底是怎么了？艺人一个接一个的出事",
-          loveNum: 57000,
-          isLoved: false,
-          time: "2021-08-24 20:10",
-          children: [
-            {
-              id: "10",
-              avatar: new URL(
-                "../assets/img/icon/avatar/2.png",
-                import.meta.url
-              ).href,
-              name: "sugar少吃一点",
-              replay: "",
-              text: "要么之前吴京说了一句话对一个小女孩说，以后别来娱乐圈",
-              loveNum: 9174,
-              isLoved: false,
-              time: "2022-08-24 20:25",
-            },
-            {
-              id: "11",
-              avatar: new URL(
-                "../assets/img/icon/avatar/3.png",
-                import.meta.url
-              ).href,
-              name: "我不吃晚饭了",
-              replay: "sugar少吃一点",
-              text: "@nana max",
-              loveNum: 695,
-              isLoved: false,
-              time: "2023-01-24 20:29",
-            },
-            {
-              id: "12",
-              avatar: new URL(
-                "../assets/img/icon/avatar/4.png",
-                import.meta.url
-              ).href,
-              name: "我劝你善良",
-              replay: "sugar少吃一点",
-              text: "对对 我也刷到过这个视频",
-              loveNum: 1253,
-              isLoved: false,
-              time: "2023-02-23 20:59",
-            },
-          ],
+          params: {
+            user_id: this.$store.state.user_id,
+            video_id: this.videoId,
+          },
         },
-        {
-          id: "2",
-          avatar: new URL("../assets/img/icon/avatar/4.png", import.meta.url)
-            .href,
-          name: "成都旅行",
-          text: "开车回来4个小时，爬山两小时，如果当天天气好，你一定会喜欢上这里，是真的美！一日游",
-          loveNum: 27,
-          isLoved: false,
-          time: "2021-08-24 20:33",
-          children: [
-            {
-              id: "20",
-              avatar: new URL(
-                "../assets/img/icon/avatar/4.png",
-                import.meta.url
-              ).href,
-              name: "成都旅行",
-              replay: "",
-              text: "甘海子，汶川转经楼村",
-              loveNum: 32,
-              isLoved: false,
-              time: "2021-08-24 20:34",
-            },
-            {
-              id: "21",
-              avatar: new URL(
-                "../assets/img/icon/avatar/5.png",
-                import.meta.url
-              ).href,
-              name: "August",
-              replay: "成都旅行",
-              text: "@NickyOO @AW%",
-              loveNum: 0,
-              isLoved: false,
-              time: "2021-08-25 03:29",
-            },
-            {
-              id: "22",
-              avatar: new URL(
-                "../assets/img/icon/avatar/6.png",
-                import.meta.url
-              ).href,
-              name: "用户121342411",
-              replay: "成都旅行",
-              text: "自己可以开私家车进去不",
-              loveNum: 1,
-              isLoved: false,
-              time: "2021-08-25 07:29",
-            },
-          ],
-        },
-      ];
+        {}
+      );
+      console.log(this.videoId);
+      console.log(res);
+      this.comments = res.data.comment_list;
+      // this.comments = [
+      //   {
+      //     id: '1',
+      //     avatar: new URL('../assets/img/icon/avatar/1.png', import.meta.url).href,
+      //     name: '彭雨晏',
+      //     text: '这到底是怎么了？艺人一个接一个的出事',
+      //     loveNum: 57000,
+      //     isLoved: false,
+      //     time: '2021-08-24 20:10',
+      //     children: [
+      //       {
+      //         id: '10',
+      //         avatar: new URL('../assets/img/icon/avatar/2.png', import.meta.url).href,
+      //         name: 'sugar少吃一点',
+      //         replay: '',
+      //         text: '要么之前吴京说了一句话对一个小女孩说，以后别来娱乐圈',
+      //         loveNum: 9174,
+      //         isLoved: false,
+      //         time: '2022-08-24 20:25',
+      //       },
+      //       {
+      //         id: '11',
+      //         avatar: new URL('../assets/img/icon/avatar/3.png', import.meta.url).href,
+      //         name: '我不吃晚饭了',
+      //         replay: 'sugar少吃一点',
+      //         text: '@nana max',
+      //         loveNum: 695,
+      //         isLoved: false,
+      //         time: '2023-01-24 20:29',
+      //       },
+      //       {
+      //         id: '12',
+      //         avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
+      //         name: '我劝你善良',
+      //         replay: 'sugar少吃一点',
+      //         text: '对对 我也刷到过这个视频',
+      //         loveNum: 1253,
+      //         isLoved: false,
+      //         time: '2023-02-23 20:59',
+      //       },
+      //     ]
+      //   },
+      //   {
+      //     id: '2',
+      //     avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
+      //     name: '成都旅行',
+      //     text: '开车回来4个小时，爬山两小时，如果当天天气好，你一定会喜欢上这里，是真的美！一日游',
+      //     loveNum: 27,
+      //     isLoved: false,
+      //     time: '2021-08-24 20:33',
+      //     children: [
+      //       {
+      //         id: '20',
+      //         avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
+      //         name: '成都旅行',
+      //         replay: '',
+      //         text: '甘海子，汶川转经楼村',
+      //         loveNum: 32,
+      //         isLoved: false,
+      //         time: '2021-08-24 20:34',
+      //       },
+      //       {
+      //         id: '21',
+      //         avatar: new URL('../assets/img/icon/avatar/5.png', import.meta.url).href,
+      //         name: 'August',
+      //         replay: '成都旅行',
+      //         text: '@NickyOO @AW%',
+      //         loveNum: 0,
+      //         isLoved: false,
+      //         time: '2021-08-25 03:29',
+      //       },
+      //       {
+      //         id: '22',
+      //         avatar: new URL('../assets/img/icon/avatar/6.png', import.meta.url).href,
+      //         name: '用户121342411',
+      //         replay: '成都旅行',
+      //         text: '自己可以开私家车进去不',
+      //         loveNum: 1,
+      //         isLoved: false,
+      //         time: '2021-08-25 07:29',
+      //       },
+      //     ]
+      //   }
+      // ]
     },
     cancel() {
       this.$emit("update:modelValue", false);
