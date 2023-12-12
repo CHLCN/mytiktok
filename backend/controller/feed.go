@@ -3,6 +3,7 @@ package controller
 import (
 	"backend/service"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +19,9 @@ type FeedResponse struct {
 func Feed(c *gin.Context) {
 	var convTime time.Time
 	convTime = time.Now()
-	userId := c.GetInt64("userId")
+	//userId := c.GetInt64("userId")
+	strUserId := c.Query("userId")
+	userId, _ := strconv.ParseInt(strUserId, 10, 64)
 	videoService := service.GetVideoServiceInstance()
 	videos, nextTime, err := videoService.Feed(convTime, userId)
 	if err != nil {

@@ -2,7 +2,9 @@
   <div class="posters">
     <div class="poster-item" v-for="(i,index) in list" @click="$no">
       <!--       @click="$nav('/video-detail')"-->
-      <img class="poster" v-lazy="$imgPreview(i.cover_url)" alt="">
+<!--      <img class="poster" v-lazy="$imgPreview(i.cover_url)" alt="">-->
+<!--      <img class="poster" :src="i.plau_url+videoPoster" alt="">-->
+      <video class="poster" :src="i.play_url" :poster="i.cover_url" preload="auto" muted = "fasle" controls></video>
       <div class="num" v-if="mode === 'normal'">
         <img class="love" src="../assets/img/icon/love.svg" alt="">
         <span>{{ formatNumber(i.digg_count) }}</span>

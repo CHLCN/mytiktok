@@ -1,15 +1,15 @@
 <template>
-  <div class="People" @click="$nav('/me/uploader')">
+  <div class="People" @click="$nav('/me/uploader',people)">
     <img :src="$imgPreview(people.avatar)" alt="" class="head-image pull-left">
     <div class="content">
       <template v-if="mode === 'normal'">
         <div class="left">
-          <div class="name">{{ people.name }}</div>
+          <div class="name">{{ people.nickname }}</div>
         </div>
       </template>
       <template v-if="mode === 'normal-add-button'">
         <div class="left">
-          <div class="name">{{ people.name }}</div>
+          <div class="name">{{ people.nickname }}</div>
         </div>
         <div class="right">
           <!--   他关注我   -->
@@ -35,11 +35,11 @@
       <template v-if="mode === 'search'">
         <div class="left">
           <div class="name">
-            <span v-if="people.name.indexOf(searchKey) > -1">{{ people.name.substr(0, people.name.indexOf(searchKey)) }}<span
+            <span v-if="people.nickname.indexOf(searchKey) > -1">{{ people.name.substr(0, people.nickname.indexOf(searchKey)) }}<span
                 style="color: yellow">{{
                 searchKey
-              }}</span>{{ people.name.substr(people.name.indexOf(searchKey) + searchKey.length) }}</span>
-            <span v-else>{{ people.name }}</span>
+              }}</span>{{ people.nickname.substr(people.nickname.indexOf(searchKey) + searchKey.length) }}</span>
+            <span v-else>{{ people.nickname }}</span>
           </div>
           <div class="name f12">抖音id:
 
@@ -55,7 +55,7 @@
 
       <template v-if="mode === 'fans'">
         <div class="left">
-          <div class="name">{{ people.name }}</div>
+          <div class="name">{{ people.nickname }}</div>
           <div class="name">
             <template v-if="people.type === RELATE_ENUM.REQUEST_FOLLOW">
               发来一个关注请求
@@ -89,7 +89,7 @@
 
       <template v-if="mode === 'recommend'">
         <div class="left">
-          <div class="name">{{ people.name }}</div>
+          <div class="name">{{ people.nickname }}</div>
           <div class="detail">可能认识的人</div>
         </div>
         <div class="right">
@@ -109,7 +109,7 @@
 
       <template v-if="mode === 'friend'">
         <div class="left">
-          <div class="name">{{ people.name }}</div>
+          <div class="name">{{ people.nickname }}</div>
           <div class="detail">4小时之内在线</div>
         </div>
         <div class="right">
@@ -120,7 +120,7 @@
 
       <template v-if="mode === 'visitor'">
         <div class="left">
-          <div class="name">{{ people.name }}</div>
+          <div class="name">{{ people.nickname }}</div>
         </div>
         <div class="right">
           <!--   他关注我   -->

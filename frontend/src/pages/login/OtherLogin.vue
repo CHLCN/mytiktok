@@ -13,7 +13,7 @@
         <div class="left">
           <Check v-model="isAgree"/>
         </div>
-        <div class="right">
+        <div class="right" style="font-size: 12rem;">
           已阅读并同意
           <span class="link" @click="$nav('/service-protocol',{type:'“抖音”用户服务协议'})">用户协议</span>
           和
@@ -38,7 +38,7 @@
         获取短信验证码
       </dy-button>
 
-      <div class="options">
+      <div class="options" style="font-size: 12rem;">
         <span class="link" @click="$nav('/login/password')">密码登录</span>
         <span class="link" @click="otherLogin">其他方式登录</span>
       </div>
@@ -116,7 +116,7 @@ export default {
             }
         )
         this.$store.state.vcode=res.data.status_msg;
-        console.log(this.$store.state.vcode)
+        this.$store.state.user_id=res.data.user_id;
 
         setTimeout(()=>{
             this.$router.push("/login/verification-code")

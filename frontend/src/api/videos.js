@@ -14,6 +14,9 @@ export default {
   like(params, data) {
     return request({url: '/me/like', method: 'get', params, data})
   },
+  updatelike(params, data) {
+    return request({url: '/favorite/action/', method: 'post', params, data})
+  },
   collect(params, data) {
     return request({url: '/me/collect', method: 'get', params, data})
   },

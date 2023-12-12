@@ -1,8 +1,11 @@
 import request from "../utils/request";
 
 export default {
-  friends(params, data) {
-    return request({url: '/user/friends', method: 'get', params, data})
+  follow(params, data) {
+    return request({url: '/relation/follow/list/', method: 'get', params, data})
+  },
+  follower(params, data) {
+    return request({url: '/relation/follower/list/', method: 'get', params, data})
   },
   author(params, data) {
     return request({url: '/user/author', method: 'get', params, data})

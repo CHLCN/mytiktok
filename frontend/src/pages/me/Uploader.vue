@@ -41,11 +41,11 @@
               <div class="heat">
                 <div class="text">
                   <span>获赞</span>
-                  <span class="num">{{ formatNumber(localAuthor.aweme_count) }}</span>
+                  <span class="num">{{ formatNumber(localAuthor.total_favorited) }}</span>
                 </div>
                 <div class="text">
                   <span>关注</span>
-                  <span class="num">{{ localAuthor.following_count }}</span>
+                  <span class="num">{{ localAuthor.follow_count }}</span>
                 </div>
                 <div class="text">
                   <span>粉丝</span>
@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="description">
-              <p class="name f22 mt1r mb1r">{{ localAuthor.name }}</p>
+              <p class="name f22 mt1r mb1r">{{ localAuthor.nickname }}</p>
               <div class="certification" v-if="localAuthor.certification ">
                 <img src="../../assets/img/icon/me/certification.webp">
                 {{ localAuthor.certification }}
@@ -84,22 +84,6 @@
                 </div>
               </div>
 
-            </div>
-            <div class="other">
-              <div class="item">
-                <img src="../../assets/img/icon/me/shopping-cart-white.png" alt="">
-                <div class="right">
-                  <div class="top">抖音商城</div>
-                  <div class="bottom">发现超值好物</div>
-                </div>
-              </div>
-              <div class="item">
-                <img src="../../assets/img/icon/me/music-white.png" alt="">
-                <div class="right">
-                  <div class="top">我的音乐</div>
-                  <div class="bottom">已收藏20首</div>
-                </div>
-              </div>
             </div>
             <div class="my-buttons">
               <div class="follow-display">
@@ -176,22 +160,22 @@
         <SlideItem class="SlideItem"
                    @scroll="scroll"
                    :style="SlideItemStyle">
-          <Posters v-if="videos.my.total !== -1" :list="videos.my.list"></Posters>
+          <Posters v-if="videos.my.length !== -1" :list="videos.my.list"></Posters>
           <Loading v-if="loadings.loading0" :is-full-screen="false"></Loading>
           <no-more v-else/>
         </SlideItem>
         <SlideItem class="SlideItem"
                    @scroll="scroll"
                    :style="SlideItemStyle">
-          <div class="notice" v-if="localAuthor.is_private === 1">
-            <img src="../../assets/img/icon/me/lock-gray.png" alt="">
-            <span>喜欢内容不可见</span>
-          </div>
-          <template v-else>
-            <Posters v-if="videos.like.total !== -1" :list="videos.like.list"></Posters>
-            <Loading v-if="loadings.loading2" :is-full-screen="false"></Loading>
+<!--          <div class="notice" v-if="localAuthor.is_private === 1">-->
+<!--            <img src="../../assets/img/icon/me/lock-gray.png" alt="">-->
+<!--            <span>喜欢内容不可见</span>-->
+<!--          </div>-->
+<!--          <template>-->
+            <Posters v-if="videos.like.length !== -1" :list="videos.like.list"></Posters>
+            <Loading v-if="loadings.loading1" :is-full-screen="false"></Loading>
             <no-more v-else/>
-          </template>
+<!--          </template>-->
         </SlideItem>
       </SlideRowList>
     </div>
@@ -330,9 +314,9 @@ export default {
       if (this.tempScroll || this.isScroll) return {overflow: 'auto'}
       return {overflow: 'hidden'}
     },
-    ...mapState({
-      userinfo: 'userinfo',
-    })
+    // ...mapState({
+    //   userinfo: 'userinfo',
+    // })
   },
   watch: {
     contentIndex(newVal, oldVal) {
@@ -382,7 +366,9 @@ export default {
       this.refs.maxSlideHeight = this.$refs.videoSlideRowList.wrapperHeight
       this.initSlideHeight = this.bodyHeight - 50 - this.refs.descHeight
       this.canTransformY = this.refs.descHeight - this.floatHeight
-      // this.getAuthor()
+      this.localAuthor = this.$route.query
+      console.log(this.localAuthor)
+      this.getAuthor()
     })
     this.videoItemHeight = this.bodyWidth / 3 * 1.2 + 2
     bus.on('baseSlide-moved', () => this.canScroll = false)
@@ -416,12 +402,13 @@ export default {
     },
     async getAuthor() {
       this.changeIndex(0, null)
-      let res = await this.$api.user.author({id: this.author.id})
-      // let res = await this.$api.user.author({id: '54884802577'})
-      if (res.code === this.SUCCESS) {
-        this.localAuthor = {...this.localAuthor, ...res.data}
-        this.refreshDescHeight()
-      }
+      // console.log(this.author)
+      // let res = await this.$api.user.author({id: this.author.id})
+      // // let res = await this.$api.user.author({id: '54884802577'})
+      // if (res.code === this.SUCCESS) {
+      //   this.localAuthor = {...this.localAuthor, ...res.data}
+      //   this.refreshDescHeight()
+      // }
     },
     toggleRecommend() {
       if (this.isLoadRecommendFriends) {
@@ -510,16 +497,14 @@ export default {
           let res
           switch (newVal) {
             case 0:
-              res = await this.$api.videos.my({pageNo: this.videos.my.pageNo, pageSize: this.pageSize,})
-              if (res.code === this.SUCCESS) this.videos.my = res.data
+              res = await this.$api.videos.mypost({user_id:this.localAuthor.id})
+              // console.log(res)
+              if (res.status === this.SUCCESS) this.videos.my.list = res.data.video_list
               break
             case 1:
-              res = await this.$api.videos.private({pageNo: this.videos.private.pageNo, pageSize: this.pageSize,})
-              if (res.code === this.SUCCESS) this.videos.private = res.data
-              break
-            case 2:
-              res = await this.$api.videos.like({pageNo: this.videos.like.pageNo, pageSize: this.pageSize,})
-              if (res.code === this.SUCCESS) this.videos.like = res.data
+              res = await this.$api.videos.like({user_id:this.localAuthor.id})
+              // console.log(res)
+              if (res.status === this.SUCCESS) this.videos.like.list = res.data.video_list
               break
           }
         }

@@ -3,6 +3,7 @@ import BaseMusic from "../BaseMusic";
 import Utils from "../../utils";
 import {reactive,} from "vue";
 import bus, {EVENT_KEY} from "@/utils/bus";
+import request from "../../utils/request";
 
 const props = defineProps({
   item: {
@@ -23,6 +24,12 @@ const props = defineProps({
       return false
     }
   },
+  user_id: {
+    type: Number,
+    default: () => {
+      return 2
+    }
+  }
 })
 const emit = defineEmits([
   'update:item',
@@ -31,10 +38,41 @@ const emit = defineEmits([
   'showShare',
   'goMusic',
 ])
+
+
 const state = reactive({})
 
-function loved() {
-  Utils.updateItem(props, 'isLoved', !props.item.isLoved, emit)
+async function loved() {
+  Utils.updateItem(props, 'is_favorite', !props.item.is_favorite, emit)
+  console.log(props)
+  if(!props.item.is_favorite){
+    let res = await request.post(
+        "/favorite/action/",
+        {},
+        {
+          params: {
+            user_id:props.user_id,
+            video_id:props.item.id,
+            action_type:1
+          },
+        }
+    );
+    props.item.favorite_count+=1
+  }
+  else{
+    let res = await request.post(
+        "/favorite/action/",
+        {},
+        {
+          params: {
+            user_id:props.user_id,
+            video_id:props.item.id,
+            action_type:0
+          },
+        }
+    );
+    props.item.favorite_count-=1
+  }
 }
 
 function attention(e) {
@@ -48,6 +86,7 @@ function showComments() {
   // emit('showComments')
   bus.emit(EVENT_KEY.OPEN_COMMENTS, props.item.id)
 }
+
 
 </script>
 
@@ -65,10 +104,10 @@ function showComments() {
     </div>
     <div class="love mb2r" @click.stop="loved($event)">
       <div>
-        <img src="../../assets/img/icon/love.svg" class="love-image" v-if="!props.item.isLoved">
-        <img src="../../assets/img/icon/loved.svg" class="love-image" v-if="props.item.isLoved">
+        <img src="../../assets/img/icon/love.svg" class="love-image" v-if="!props.item.is_favorite">
+        <img src="../../assets/img/icon/loved.svg" class="love-image" v-if="props.item.is_favorite">
       </div>
-      <span>{{ Utils.formatNumber(props.item.digg_count) }}</span>
+      <span>{{ Utils.formatNumber(props.item.favorite_count) }}</span>
     </div>
     <div class="message mb2r" @click.stop="showComments">
       <img src="../../assets/img/icon/message.svg" alt="" class="message-image">
@@ -76,7 +115,8 @@ function showComments() {
     </div>
     <!--TODO     -->
     <div class="message mb2r" @click.stop="Utils.updateItem(props, 'isCollect', !props.item.isCollect, emit)">
-      <img v-if="props.item.isCollect" src="@/assets/img/icon/components/video/star-full.png" alt="" class="message-image">
+      <img v-if="props.item.isCollect" src="@/assets/img/icon/components/video/star-full.png" alt=""
+           class="message-image">
       <img v-else src="@/assets/img/icon/components/video/star.png" alt="" class="message-image">
       <span>{{ Utils.formatNumber(props.item.comment_count) }}</span>
     </div>
@@ -99,8 +139,7 @@ function showComments() {
 
 <style scoped lang="less">
 .toolbar {
-  //width: 40px;
-  position: absolute;
+//width: 40px; position: absolute;
   bottom: 0;
   right: 5px;
   color: #fff;
@@ -125,9 +164,9 @@ function showComments() {
       right: 0;
       bottom: -5px;
       background: red;
-      //background: black;
-      width: 18px;
+    //background: black; width: 18px;
       height: 18px;
+      width: 18px;
       display: flex;
       justify-content: center;
       align-items: center;

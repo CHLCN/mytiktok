@@ -34,12 +34,12 @@
           </div>
           <div class="no-search" v-else>
             <div class="title">我的关注</div>
-            <People v-for="item in friends.all" :people="item"></People>
+            <People v-for="item in friends.follow" :people="item"></People>
           </div>
 
         </SlideItem>
         <SlideItem class="tab2">
-          <People v-for="item in friends.all" :people="item"></People>
+          <People v-for="item in friends.follower" :people="item"></People>
           <NoMore/>
         </SlideItem>
       </SlideRowList>
@@ -51,7 +51,6 @@ import People from './components/People'
 import Search from '../../components/Search'
 import Indicator from '../../components/slide/Indicator'
 import FromBottomDialog from "../../components/dialog/FromBottomDialog";
-import {mapState} from "vuex";
 
 export default {
   name: "FindAcquaintance",
@@ -67,24 +66,46 @@ export default {
       searchKey: '',
 
       slideIndex: 0,
-      searchFriends: []
+      searchFriends: [],
+      userinfo: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
+      friends: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
+      user_id: this.$store.state.user_id
     }
   },
-  computed: {
-    ...mapState(['userinfo', 'friends'])
+  // computed: {
+  //   ...mapState(['userinfo', 'friends'])
+  // },
+  mounted() {
+    setTimeout(() => {
+      this.getUserInfo()
+      this.changeIndex(0)
+    })
   },
   watch: {
     searchKey(newVal) {
       if (newVal) {
         //TODO　搜索时仅仅判断是否包含了对应字符串，抖音做了拼音判断的
-        this.searchFriends = this.friends.all.filter(v => {
-          if (v.name.includes(newVal)) return true
-          return v.account.includes(newVal);
+        this.searchFriends = this.friends.follow.filter(v => {
+          if (v.nickname.includes(newVal)) return true
+          return v.nickname.includes(newVal);
         })
       } else {
         this.searchFriends = []
       }
-    }
+    },
+    slideIndex(newVal) {
+      this.changeIndex(newVal)
+    },
   },
   created() {
     this.slideIndex = ~~this.$route.query.type
@@ -96,14 +117,35 @@ export default {
       this.$hideLoading()
       this.isSearch = true
     },
-    back() {
-      if (this.isShowRightText) {
-        this.isShowRightText = false
-      } else {
-        this.$back()
+    async getUserInfo() {
+      let res = await this.$api.videos.my({user_id: this.user_id})
+      // console.log(res)
+      if (res.status === this.SUCCESS) this.userinfo = res.data.user
+    },
+    async changeIndex(newVal) {
+      let res
+      switch (newVal) {
+        case 0:
+          res = await this.$api.user.follow({user_id: this.user_id})
+          // console.log(res)
+          if (res.status === this.SUCCESS) this.friends.follow = res.data.user_list
+          break
+        case 1:
+          res = await this.$api.user.follower({user_id: this.user_id})
+          // console.log(res)
+          if (res.status === this.SUCCESS) this.friends.follower = res.data.user_list
+          break
       }
     }
+  },
+  back() {
+    if (this.isShowRightText) {
+      this.isShowRightText = false
+    } else {
+      this.$back()
+    }
   }
+
 }
 </script>
 

@@ -27,7 +27,7 @@
              @touchmove="touchMove($event)"
              @touchend="touchEnd($event)">
           <div ref="desc" class="desc">
-            <header ref="header" @click="previewImg = new URL('../../assets/img/header-bg.png')"></header>
+            <header ref="header" @click="previewImg = new URL('../../assets/img/header-bg.jpg')"></header>
             <div class="detail">
               <div class="head">
                 <img  :src="$imgPreview(userinfo.avatar)" class="head-image"
@@ -35,11 +35,11 @@
                 <div class="heat">
                   <div class="text" @click="isShowStarCount = true">
                     <span>获赞</span>
-                    <span class="num">{{ formatNumber(userinfo.aweme_count) }}</span>
+                    <span class="num">{{ userinfo.total_favorited }}</span>
                   </div>
                   <div class="text" @click="$nav('/people/follow-and-fans',{type:0})">
                     <span>关注</span>
-                    <span class="num">{{ formatNumber(userinfo.following_count) }}</span>
+                    <span class="num">{{ formatNumber(userinfo.follow_count) }}</span>
                   </div>
                   <div class="text" @click="$nav('/people/follow-and-fans',{type:1})">
                     <span>粉丝</span>
@@ -81,7 +81,10 @@
 
               </div>
               <div class="my-buttons">
-                <div class="button" @click="$nav('/me/edit-userinfo')">
+<!--                <div class="button" @click="$nav('/me/edit-userinfo')">-->
+<!--                  <span>编辑资料</span>-->
+<!--                </div>-->
+                <div class="button" @click="$no">
                   <span>编辑资料</span>
                 </div>
                 <div class="button" @click="$nav('/people/find-acquaintance')">
@@ -92,8 +95,8 @@
           </div>
           <Indicator
               name="videoList"
-              tabStyleWidth="25%"
-              :tabTexts="['作品','喜欢','收藏']"
+              tabStyleWidth="50%"
+              :tabTexts="['作品','喜欢']"
               v-model:active-index="contentIndex">
           </Indicator>
           <SlideRowList
@@ -111,78 +114,12 @@
             <SlideItem class="SlideItem"
                        @scroll="scroll"
                        :style="SlideItemStyle">
-              <div class="notice">
-                <img src="../../assets/img/icon/me/lock-gray.png" alt="">
-                <span>只有你能看到设为私密的作品和日常</span>
-              </div>
-              <Posters v-if="videos.private.total !== -1" mode="date" :list="videos.private.list"></Posters>
-              <Loading v-if="loadings.loading1" :is-full-screen="false"></Loading>
-              <no-more v-else/>
-            </SlideItem>
-            <SlideItem class="SlideItem"
-                       @scroll="scroll"
-                       :style="SlideItemStyle">
-              <div class="notice">
-                <img src="../../assets/img/icon/me/lock-gray.png" alt="">
-                <span>只有你能看到自己的喜欢列表</span>
-              </div>
-              <Posters v-if="videos.like.total !== -1" :list="videos.like.list"></Posters>
+<!--              <div class="notice">-->
+<!--                <img src="../../assets/img/icon/me/lock-gray.png" alt="">-->
+<!--                <span>只有你能看到自己的喜欢列表</span>-->
+<!--              </div>-->
+              <Posters v-if="videos.like.length !== -1" :list="videos.like.list"></Posters>
               <Loading v-if="loadings.loading2" :is-full-screen="false"></Loading>
-              <no-more v-else/>
-            </SlideItem>
-            <SlideItem class="SlideItem"
-                       @scroll="scroll"
-                       :style="SlideItemStyle">
-              <div class="notice">
-                <img src="../../assets/img/icon/me/lock-gray.png" alt="">
-                <span>只有你能看到自己的收藏列表</span>
-              </div>
-              <div class="collect" ref="collect">
-                <div class="video" v-if=" videos.collect.video.total !== -1">
-                  <div class="top" @click="$nav('/me/collect/video-collect')">
-                    <div class="left">
-                      <img src="../../assets/img/icon/me/video-whitegray.png" alt="">
-                      <span>视频</span>
-                    </div>
-                    <div class="right">
-                      <span>全部</span>
-                      <dy-back direction="right"></dy-back>
-                    </div>
-                  </div>
-                  <div class="list">
-                    <div class="item"
-                         v-for="i in videos.collect.video.list.slice(0,3)">
-                      <img class="poster" :src="$imgPreview(i.video+videoPoster)" alt="">
-                      <div class="num">
-                        <img class="love" src="../../assets/img/icon/love.svg" alt="">
-                        <span>{{ formatNumber(i.likeNum) }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="music" v-if=" videos.collect.music.total !== -1">
-                  <div class="top" @click="$nav('/me/collect/music-collect')">
-                    <div class="left">
-                      <img src="../../assets/img/icon/me/music-whitegray.png" alt="">
-                      <span>音乐</span>
-                    </div>
-                    <div class="right">
-                      <span>全部</span>
-                      <dy-back direction="right"></dy-back>
-                    </div>
-                  </div>
-                  <div class="list">
-                    <div class="item"
-                         @click.stop="$nav('/home/music', i)"
-                         v-for="i in videos.collect.music.list.slice(0,3)">
-                      <img class="poster" :src="$imgPreview(i.cover)" alt="">
-                      <div class="title">{{ i.name }}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <Loading v-if="loadings.loading3" :is-full-screen="false"></Loading>
               <no-more v-else/>
             </SlideItem>
           </SlideRowList>
@@ -306,7 +243,7 @@
 
     <ConfirmDialog
         v-model:visible="isShowStarCount"
-        :subtitle='`"${userinfo.nickname}"共获得${this.formatNumber(userinfo.aweme_count)}个赞`'
+        :subtitle='`"${userinfo.nickname}"共获得${userinfo.total_favorited}个赞`'
         okText="确认"
         cancelText="取消"
         @ok="isShowStarCount = false"
@@ -398,7 +335,8 @@ export default {
       acceleration: 1.2,
       sprint: 15,
       canScroll: true,
-      videoPoster: `?vframe/jpg/offset/0/w/${document.body.clientWidth}`
+      videoPoster: `?vframe/jpg/offset/0/w/${document.body.clientWidth}`,
+      user_id: this.$store.state.user_id
     }
   },
   computed: {
@@ -455,7 +393,8 @@ export default {
     },
 
     async getUserInfo(){
-      let res =await this.$api.videos.my({user_id:2})
+      let res =await this.$api.videos.my({user_id:this.user_id})
+      console.log(res)
       if (res.status === this.SUCCESS) this.userinfo = res.data.user
     },
 
@@ -497,18 +436,12 @@ export default {
           let res
           switch (newVal) {
             case 0:
-              // res = await this.$api.videos.my({pageNo: this.videos.my.pageNo, pageSize: this.pageSize,})
-              res = await this.$api.videos.mypost({user_id:2})
-              console.log(res)
+              res = await this.$api.videos.mypost({user_id:this.user_id})
               if (res.status === this.SUCCESS) this.videos.my.list = res.data.video_list
               break
             case 1:
-              res = await this.$api.videos.private({pageNo: this.videos.private.pageNo, pageSize: this.pageSize,})
-              if (res.code === this.SUCCESS) this.videos.private = res.data
-              break
-            case 2:
-              res = await this.$api.videos.like({pageNo: this.videos.like.pageNo, pageSize: this.pageSize,})
-              if (res.code === this.SUCCESS) this.videos.like = res.data
+              res = await this.$api.videos.like({user_id:this.user_id})
+              if (res.status === this.SUCCESS) this.videos.like.list = res.data.video_list
               break
           }
         }
@@ -551,9 +484,6 @@ export default {
             break
           case 1:
             res = await this.$api.videos.like({pageNo: videoOb.pageNo, pageSize: this.pageSize,})
-            break
-          case 2:
-            res = await this.$api.videos.collect({pageNo: videoOb.pageNo, pageSize: this.pageSize,})
             break
         }
         this.loadings['loading' + this.contentIndex] = false
