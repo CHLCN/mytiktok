@@ -94,18 +94,7 @@ async function getData(refresh = false) {
   if (loading.value) return
   store.commit('setLoading', true)
   let res = await props.api({userId:store.state.user_id})
-  // let res = await props.api({pageNo: refresh ? 0 : state.pageNo, pageSize: state.pageSize})
   store.commit('setLoading', false)
-  // if (res.code === 200) {
-  //   state.totalSize = res.data.total
-  //   if (refresh) {
-  //     state.list = []
-  //   }
-  //   state.list = state.list.concat(res.data.list)
-  // } else {
-  //   state.pageNo--
-  // }
-  // console.log(res)
   if (res.data.status_code === 0) {
     state.totalSize = res.data.video_list.length
     if (refresh) {
