@@ -184,6 +184,7 @@ export default {
       isInput: false,
       isCall: false,
       videoId: 0,
+      user: { avatar: "../src/assets/img/icon/avatar/2.png", nickname: "XG" },
     };
   },
   mounted() {
@@ -199,13 +200,14 @@ export default {
     send() {
       this.comments.push({
         id: "2",
-        avatar: new URL("../assets/img/icon/avatar/2.png", import.meta.url)
-          .href,
-        name: "XG",
-        text: this.comment,
-        loveNum: 27,
+        user: this.user,
+        // avatar: "../assets/img/icon/avatar/2.png",
+        // nickname: "XG",
+        // comment: "@何以为家",
+        content: this.comment,
+        loveNum: 0,
         isLoved: false,
-        time: "2021-08-24 20:33",
+        time: "2023-12-12 20:33",
         children: [],
       });
       this.comment = "";
