@@ -29,7 +29,7 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/me/mypost", jwt.AuthWithoutLogin(), controller.PublishList)
 
 	// 互动接口
-	apiRouter.POST("/favorite/action/", jwt.Auth(), controller.FavoriteAction)
+	apiRouter.POST("/favorite/action/", jwt.AuthWithoutLogin(), controller.FavoriteAction)
 	apiRouter.GET("/me/like", jwt.AuthWithoutLogin(), controller.FavoriteList)
 	apiRouter.POST("/comment/action/", jwt.Auth(), controller.CommentAction)
 	apiRouter.GET("/comment/list/", jwt.AuthWithoutLogin(), controller.CommentList)

@@ -23,7 +23,9 @@ func FavoriteAction(c *gin.Context) {
 	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	actionType, _ := strconv.ParseInt(c.Query("action_type"), 10, 32)
 	Fni := service.NewLikeServImpInstance()
-	err := Fni.FavoriteAction(c.GetInt64("userId"), videoId, int32(actionType))
+	reqUserId := c.Query("user_id")
+	userId, _ := strconv.ParseInt(reqUserId, 10, 64)
+	err := Fni.FavoriteAction(userId, videoId, int32(actionType))
 	if err == nil {
 		log.Printf("方法like.FavouriteAction(userid, videoId, int32(actiontype) 成功")
 		c.JSON(http.StatusOK, FavoriteActionResponse{

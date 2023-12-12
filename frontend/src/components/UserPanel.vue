@@ -265,17 +265,7 @@ watch(() => props.active,
         let res = await api.user.profile({user_id:props.currentItem.AuthorId})
         let post = await api.videos.mypost(({user_id:props.currentItem.AuthorId}))
         if (res.status === 200) {
-          // res.data.post = res.data.post.map(v => {
-          //   return {
-          //     cover: v.video.cover.url_list[0],
-          //     digg_count: v.statistics.digg_count,
-          //     create_time: v.create_time
-          //   }
-          // })
-          // //去年保存的老数据有id。现在去网页版复制数据没id了。。。
-          // res.data.user.unique_id = props.currentItem.user.unique_id
           emit('update:currentItem', merge(props.currentItem, {...res.data.user,...post.data, isRequest: true}))
-          // console.log(props.currentItem)
         }
       }
     })

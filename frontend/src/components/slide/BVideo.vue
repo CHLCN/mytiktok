@@ -18,6 +18,7 @@
         <template v-if="!commentVisible">
           <ItemToolbar v-model:item="localItem"
                        :position="position"
+                       :user_id = "user_id"
                        v-bind="$attrs"
           />
           <ItemDesc
@@ -75,6 +76,7 @@ import ItemDesc from "./ItemDesc";
 import bus, {EVENT_KEY} from "../../utils/bus";
 import {SlideItemPlayStatus} from "../../utils/const_var";
 import {computed} from "vue";
+import {useStore} from "vuex";
 
 export default {
   name: "BVideo",
@@ -161,7 +163,8 @@ export default {
       videoScreenHeight: 0,
       videoPoster: `?vframe/jpg/offset/0/w/${document.body.clientWidth}`,
       commentVisible: false,
-      LUtils: Utils
+      LUtils: Utils,
+      user_id: 2,
     }
   },
   mounted() {
@@ -169,6 +172,8 @@ export default {
     // console.log(this.$refs)
     this.height = document.body.clientHeight
     this.width = document.body.clientWidth
+    // // this.user_id = store.state.user_id
+
     let video = this.$refs.video
     video.currentTime = 0
     let fun = e => {
