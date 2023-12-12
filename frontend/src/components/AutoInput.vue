@@ -1,9 +1,11 @@
 <template>
-  <div ref="input"
-       :placeholder="placeholder"
-       class="auto-input"
-       contenteditable
-       @input="changeText">
+  <div
+    ref="input"
+    :placeholder="placeholder"
+    class="auto-input"
+    contenteditable
+    @input="changeText"
+  >
     {{ modelValue }}
   </div>
 </template>
@@ -15,26 +17,25 @@ export default {
     modelValue: String,
     placeholder: {
       type: String,
-      default: '留下你的精彩评论吧'
-    }
+      default: "留下你的精彩评论吧",
+    },
   },
   mounted() {
     // this.$refs.input.setAttribute("placeholder", "改变")
   },
   computed: {},
   data: function () {
-    return {}
+    return {};
   },
   methods: {
     changeText(e) {
-      this.$emit('update:modelValue', this.$el.innerText);
-    }
-  }
-}
+      this.$emit("update:modelValue", this.$el.innerText);
+    },
+  },
+};
 </script>
 
 <style scoped lang="less">
-
 .auto-input {
   font-size: 12rem;
   width: 100%;
@@ -45,7 +46,7 @@ export default {
 }
 
 .auto-input::-webkit-scrollbar {
-  width: 0 !important
+  width: 0 !important;
 }
 
 .auto-input:empty::before {

@@ -8,69 +8,91 @@
     <div class="content">
       <div class="desc">
         <div class="title">登录后，体验完整功能</div>
-        <div class="protocol" :class="showAnim?'anim-bounce':''">
-        <Tooltip style="top: -100%;left: -10rem;" v-model="showTooltip"/>
-        <div class="left">
-          <Check v-model="isAgree"/>
+        <div class="protocol" :class="showAnim ? 'anim-bounce' : ''">
+          <Tooltip style="top: -100%; left: -10rem" v-model="showTooltip" />
+          <div class="left">
+            <Check v-model="isAgree" />
+          </div>
+          <div class="right" style="font-size: 12rem">
+            已阅读并同意
+            <span
+              class="link"
+              @click="$nav('/service-protocol', { type: '“抖音”用户服务协议' })"
+              >用户协议</span
+            >
+            和
+            <span
+              class="link"
+              @click="$nav('/service-protocol', { type: '“抖音”隐私政策' })"
+              >隐私政策</span
+            >
+            以及
+            <span
+              class="link"
+              @click="
+                $nav('/service-protocol', { type: '“抖音”运营商服务协议' })
+              "
+              >运营商服务协议</span
+            >
+            ，运营商将对你提供的手机号进行验证
+          </div>
         </div>
-        <div class="right" style="font-size: 12rem;">
-          已阅读并同意
-          <span class="link" @click="$nav('/service-protocol',{type:'“抖音”用户服务协议'})">用户协议</span>
-          和
-          <span class="link" @click="$nav('/service-protocol',{type:'“抖音”隐私政策'})">隐私政策</span>
-          以及
-          <span class="link" @click="$nav('/service-protocol',{type:'“抖音”运营商服务协议'})">运营商服务协议</span>
-          ，运营商将对你提供的手机号进行验证
-        </div>
-      </div>
       </div>
 
-      
-      <LoginInput autofocus type="phone" v-model="phone" placeholder="请输入手机号"/>
+      <LoginInput
+        autofocus
+        type="phone"
+        v-model="phone"
+        placeholder="请输入手机号"
+      />
       <div class="sub-title">未注册的手机号验证通过后将自动注册</div>
       <div class="notice" v-if="notice">
         {{ notice }}
       </div>
 
- 
-
-      <dy-button type="primary" :loading="loading" :active="false" :disabled="phone.length < 11" @click="getCode">
+      <dy-button
+        type="primary"
+        :loading="loading"
+        :active="false"
+        :disabled="phone.length < 11"
+        @click="getCode"
+      >
         获取短信验证码
       </dy-button>
 
-      <div class="options" style="font-size: 12rem;">
+      <div class="options" style="font-size: 12rem">
         <span class="link" @click="$nav('/login/password')">密码登录</span>
         <span class="link" @click="otherLogin">其他方式登录</span>
       </div>
 
       <from-bottom-dialog
-          page-id="other-login"
-          v-model="isOtherLogin"
-          :show-heng-gang="false"
-          height="270rem"
-          mode="white">
+        page-id="other-login"
+        v-model="isOtherLogin"
+        :show-heng-gang="false"
+        height="270rem"
+        mode="white"
+      >
         <div class="block-dialog">
           <div class="item" @click="$no">
-            <img src="../../assets/img/icon/login/toutiao-round.png" alt="">
+            <img src="../../assets/img/icon/login/toutiao-round.png" alt="" />
             <span>今日头条登录</span>
           </div>
           <div class="item" @click="$no">
-            <img src="../../assets/img/icon/login/qq.webp" alt="">
+            <img src="../../assets/img/icon/login/qq.webp" alt="" />
             <span>QQ登录</span>
           </div>
           <div class="item" @click="$no">
-            <img src="../../assets/img/icon/login/wechat.webp" alt="">
+            <img src="../../assets/img/icon/login/wechat.webp" alt="" />
             <span>微信登录</span>
           </div>
           <div class="item" @click="$no">
-            <img src="../../assets/img/icon/login/weibo.webp" alt="">
+            <img src="../../assets/img/icon/login/weibo.webp" alt="" />
             <span>微博登录</span>
           </div>
           <div class="space"></div>
           <div class="item" @click="isOtherLogin = false">取消</div>
         </div>
       </from-bottom-dialog>
-
     </div>
   </div>
 </template>
@@ -80,7 +102,7 @@ import Tooltip from "./components/Tooltip";
 import LoginInput from "./components/LoginInput";
 import Base from "./Base.js";
 import FromBottomDialog from "../../components/dialog/FromBottomDialog";
-import request from '../../utils/request'
+import request from "../../utils/request";
 
 export default {
   name: "OtherLogin",
@@ -89,52 +111,49 @@ export default {
     Check,
     Tooltip,
     LoginInput,
-    FromBottomDialog
+    FromBottomDialog,
   },
   data() {
     return {
-      phone: '',
-      notice: ''
-    }
+      phone: "",
+      notice: "",
+    };
   },
   computed: {},
-  created() {
-  },
+  created() {},
   methods: {
     async getCode() {
-        this.$store.state.phone=this.phone;
-      let isCheck = await this.check()
+      this.$store.state.phone = this.phone;
+      let isCheck = await this.check();
       if (isCheck) {
-        this.loading = true
+        this.loading = true;
         let res = await request.post(
-            '/user/login',
-            {},
-            {
-                params:{
-                    username:this.phone,
-                }
-            }
-        )
-        this.$store.state.vcode=res.data.status_msg;
-        this.$store.state.user_id=res.data.user_id;
+          "/user/login",
+          {},
+          {
+            params: {
+              username: this.phone,
+            },
+          }
+        );
+        this.$store.state.vcode = res.data.status_msg;
+        console.log(this.$store.state.vcode);
+        this.$store.state.user_id = res.data.user_id;
 
-        setTimeout(()=>{
-            this.$router.push("/login/verification-code")
-            this.loading=false
-        },1500)
-        
-        
-        
+        setTimeout(() => {
+          this.$router.push("/login/verification-code");
+          this.loading = false;
+        }, 1500);
       }
     },
     async otherLogin() {
-      let isCheck = await this.check()
+      let isCheck = await this.check();
       if (isCheck) {
-        this.isOtherLogin = true
+        this.isOtherLogin = true;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped lang="less">
@@ -151,37 +170,34 @@ export default {
   color: black;
   font-size: 14rem;
   background: white;
-.content{
-   padding: 60rem 30rem;
+  .content {
+    padding: 60rem 30rem;
     .desc {
       margin-bottom: 30rem;
       margin-top: 30rem;
       display: flex;
-    //   align-items: center;
-    //   flex-direction: column;
+      //   align-items: center;
+      //   flex-direction: column;
 
-    .left{
+      .left {
         margin-right: 5rem;
+      }
     }
 
+    .sub-title {
+      font-size: 12rem;
+      color: @second-text-color;
+      margin-top: 5rem;
+      margin-bottom: 15rem;
     }
-
-    .sub-title{
-        font-size:12rem;
-        color: @second-text-color;
-        margin-top: 5rem;
-        margin-bottom: 15rem;
+    .title {
+      margin-bottom: 5rem;
+      font-size: large;
     }
-    .title{
-
-        margin-bottom: 5rem;
-        font-size: large;
+    .options {
+      margin-top: 15rem;
     }
-  .options{
-    margin-top: 15rem;  
   }
-}
- 
 
   .block-dialog {
     color: black;
@@ -208,9 +224,5 @@ export default {
       background: whitesmoke;
     }
   }
-
-
 }
-
-
 </style>

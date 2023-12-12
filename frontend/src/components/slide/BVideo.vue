@@ -1,35 +1,43 @@
 <template>
   <div class="video-wrapper" ref="videoWrapper" :class="positionName">
-    <Loading v-if="loading" style="position: absolute"/>
+    <Loading v-if="loading" style="position: absolute" />
     <!--    <video :src="item.video + '?v=123'"-->
     <video
-        :src="item.play_url"
-           :poster="item.play_url + videoPoster"
-           ref="video"
-           muted
-           preload
-           :playsinline="true"
-           :autoplay="isPlay" loop>
-      <p> 您的浏览器不支持 video 标签。</p>
+      :src="item.play_url"
+      :poster="item.play_url + videoPoster"
+      ref="video"
+      muted
+      preload
+      :playsinline="true"
+      :autoplay="isPlay"
+      loop
+    >
+      <p>您的浏览器不支持 video 标签。</p>
     </video>
-    <img src="../../assets/img/icon/play-white.png" class="pause" v-if="!isPlaying">
-    <div class="float" :style="{opacity: isUp?0:1}">
-      <div :style="{opacity:isMove ? 0:1}" class="normal">
+    <img
+      src="../../assets/img/icon/play-white.png"
+      class="pause"
+      v-if="!isPlaying"
+    />
+    <div class="float" :style="{ opacity: isUp ? 0 : 1 }">
+      <div :style="{ opacity: isMove ? 0 : 1 }" class="normal">
         <template v-if="!commentVisible">
-          <ItemToolbar v-model:item="localItem"
-                       :position="position"
-                       :user_id = "user_id"
-                       v-bind="$attrs"
+          <ItemToolbar
+            v-model:item="localItem"
+            :position="position"
+            :user_id="user_id"
+            v-bind="$attrs"
           />
-          <ItemDesc
-              v-model:item="localItem"
-              :position="position"
-          />
+          <ItemDesc v-model:item="localItem" :position="position" />
         </template>
         <div v-if="isMy" class="comment-status">
           <div class="comment">
             <div class="type-comment">
-              <img src="../../assets/img/icon/head-image.jpeg" alt="" class="avatar">
+              <img
+                src="../../assets/img/icon/head-image.jpeg"
+                alt=""
+                class="avatar"
+              />
               <div class="right">
                 <p>
                   <span class="name">zzzzz</span>
@@ -40,20 +48,29 @@
             </div>
             <transition-group name="comment-status" tag="div" class="loveds">
               <div class="type-loved" :key="i" v-for="i in test">
-                <img src="../../assets/img/icon/head-image.jpeg" alt="" class="avatar">
-                <img src="../../assets/img/icon/love.svg" alt="" class="loved">
+                <img
+                  src="../../assets/img/icon/head-image.jpeg"
+                  alt=""
+                  class="avatar"
+                />
+                <img
+                  src="../../assets/img/icon/love.svg"
+                  alt=""
+                  class="loved"
+                />
               </div>
             </transition-group>
           </div>
         </div>
       </div>
-      <div class="progress"
-           :class="progressClass"
-           ref="progress"
-           @click="null"
-           @touchstart="touchstart"
-           @touchmove="touchmove"
-           @touchend="touchend"
+      <div
+        class="progress"
+        :class="progressClass"
+        ref="progress"
+        @click="null"
+        @touchstart="touchstart"
+        @touchmove="touchmove"
+        @touchend="touchend"
       >
         <div class="time" v-if="isMove">
           <span class="currentTime">{{ LUtils.$duration(currentTime) }}</span>
@@ -68,95 +85,97 @@
 </template>
 
 <script>
-import Utils from '../../utils'
+import Utils from "../../utils";
 import Dom from "../../utils/dom";
 import Loading from "../Loading";
 import ItemToolbar from "./ItemToolbar";
 import ItemDesc from "./ItemDesc";
-import bus, {EVENT_KEY} from "../../utils/bus";
-import {SlideItemPlayStatus} from "../../utils/const_var";
-import {computed} from "vue";
-import {useStore} from "vuex";
+import bus, { EVENT_KEY } from "../../utils/bus";
+import { SlideItemPlayStatus } from "../../utils/const_var";
+import { computed } from "vue";
+import { useStore } from "vuex";
 
 export default {
   name: "BVideo",
   components: {
     Loading,
     ItemToolbar,
-    ItemDesc
+    ItemDesc,
   },
   provide() {
     return {
       // isPlaying: computed(() => this.status)
-      isPlaying: computed(() => this.isPlaying)
-    }
+      isPlaying: computed(() => this.isPlaying),
+    };
   },
   props: {
     item: {
       type: Object,
       default: () => {
-        return {}
-      }
+        return {};
+      },
     },
     position: {
       type: Object,
       default: () => {
-        return {}
-      }
+        return {};
+      },
     },
     //用于第一条数据，自动播放，如果都用事件去触发播放，有延迟
     isPlay: {
       type: Boolean,
       default: () => {
-        return true
-      }
+        return true;
+      },
     },
     isMy: {
       type: Boolean,
       default: () => {
-        return false
-      }
+        return false;
+      },
     },
     isUp: {
       type: Boolean,
       default: () => {
-        return false
-      }
-    }
+        return false;
+      },
+    },
   },
   computed: {
     durationStyle() {
-      return {width: this.playX + 'px'}
+      return { width: this.playX + "px" };
     },
     progressClass() {
       if (this.isMove) {
-        return 'move'
+        return "move";
       } else {
-        return this.isPlaying ? '' : 'stop'
+        return this.isPlaying ? "" : "stop";
       }
     },
     positionName() {
-      return 'item-' + Object.values(this.position).join('-')
+      return "item-" + Object.values(this.position).join("-");
     },
     isPlaying() {
-      return this.status === SlideItemPlayStatus.Play
-    }
+      return this.status === SlideItemPlayStatus.Play;
+    },
   },
   data() {
     return {
       loading: false,
       paused: false,
-      status: this.isPlay ? SlideItemPlayStatus.Play : SlideItemPlayStatus.Pause,
+      status: this.isPlay
+        ? SlideItemPlayStatus.Play
+        : SlideItemPlayStatus.Pause,
       duration: 0,
       step: 0,
       currentTime: -1,
       playX: 0,
-      start: {x: 0},
-      last: {x: 0, time: 0},
+      start: { x: 0 },
+      last: { x: 0, time: 0 },
       height: 0,
       width: 0,
       isMove: false,
-      ignoreWaiting: false,//忽略waiting事件。因为改变进度会触发waiting事件，烦的一批
+      ignoreWaiting: false, //忽略waiting事件。因为改变进度会触发waiting事件，烦的一批
       test: [1, 2],
       localItem: this.item,
       progressBarRect: {},
@@ -165,41 +184,46 @@ export default {
       commentVisible: false,
       LUtils: Utils,
       user_id: 2,
-    }
+    };
   },
   mounted() {
     // console.log('video', this.localItem.id)
     // console.log(this.$refs)
-    this.height = document.body.clientHeight
-    this.width = document.body.clientWidth
+    this.height = document.body.clientHeight;
+    this.width = document.body.clientWidth;
     // // this.user_id = store.state.user_id
 
-    let video = this.$refs.video
-    video.currentTime = 0
-    let fun = e => {
-      this.currentTime = Math.ceil(e.target.currentTime)
-      this.playX = (this.currentTime - 1) * this.step
-    }
-    video.addEventListener('loadedmetadata', e => {
-      this.videoScreenHeight = video.videoHeight / (video.videoWidth / this.width)
-      this.duration = video.duration
-      this.progressBarRect = this.$refs.progress.getBoundingClientRect()
-      this.step = this.progressBarRect.width / Math.floor(this.duration)
-      video.addEventListener('timeupdate', fun)
-    })
+    let video = this.$refs.video;
+    video.currentTime = 0;
+    let fun = (e) => {
+      this.currentTime = Math.ceil(e.target.currentTime);
+      this.playX = (this.currentTime - 1) * this.step;
+    };
+    video.addEventListener("loadedmetadata", (e) => {
+      this.videoScreenHeight =
+        video.videoHeight / (video.videoWidth / this.width);
+      this.duration = video.duration;
+      this.progressBarRect = this.$refs.progress.getBoundingClientRect();
+      this.step = this.progressBarRect.width / Math.floor(this.duration);
+      video.addEventListener("timeupdate", fun);
+    });
 
     let eventTester = (e, t) => {
-      video.addEventListener(e, () => {
-        // console.log('eventTester', e, this.item.id)
-        if (e === 'playing') this.loading = false
-        if (e === 'waiting') {
-          if (!this.paused && !this.ignoreWaiting) {
-            this.loading = true
+      video.addEventListener(
+        e,
+        () => {
+          // console.log('eventTester', e, this.item.id)
+          if (e === "playing") this.loading = false;
+          if (e === "waiting") {
+            if (!this.paused && !this.ignoreWaiting) {
+              this.loading = true;
+            }
           }
-        }
-        // console.log(e, t)
-      }, false);
-    }
+          // console.log(e, t)
+        },
+        false
+      );
+    };
 
     // eventTester("loadstart", '客户端开始请求数据'); //客户端开始请求数据
     // eventTester("abort", '客户端主动终止下载（不是因为错误引起）'); //客户端主动终止下载（不是因为错误引起）
@@ -213,8 +237,8 @@ export default {
     // eventTester("pause", 'pause()触发'); //pause()触发
     // eventTester("loadedmetadata", '成功获取资源长度'); //成功获取资源长度
     // eventTester("loadeddata"); //
-    eventTester("waiting", '等待数据，并非错误'); //等待数据，并非错误
-    eventTester("playing", '开始回放'); //开始回放
+    eventTester("waiting", "等待数据，并非错误"); //等待数据，并非错误
+    eventTester("playing", "开始回放"); //开始回放
     // eventTester("canplay", '/可以播放，但中途可能因为加载而暂停'); //可以播放，但中途可能因为加载而暂停
     // eventTester("canplaythrough", '可以播放，歌曲全部加载完毕'); //可以播放，歌曲全部加载完毕
     // eventTester("seeking", '寻找中'); //寻找中
@@ -227,126 +251,126 @@ export default {
 
     // console.log('mounted')
     // bus.off('singleClickBroadcast')
-    bus.on(EVENT_KEY.SINGLE_CLICK_BROADCAST, this.click)
-    bus.on(EVENT_KEY.DIALOG_MOVE, this.onDialogMove)
-    bus.on(EVENT_KEY.DIALOG_END, this.onDialogEnd)
-    bus.on(EVENT_KEY.OPEN_COMMENTS, this.onOpenComments)
-    bus.on(EVENT_KEY.CLOSE_COMMENTS, this.onCloseComments)
-    bus.on(EVENT_KEY.OPEN_SUB_TYPE, this.onOpenSubType)
-    bus.on(EVENT_KEY.CLOSE_SUB_TYPE, this.onCloseSubType)
+    bus.on(EVENT_KEY.SINGLE_CLICK_BROADCAST, this.click);
+    bus.on(EVENT_KEY.DIALOG_MOVE, this.onDialogMove);
+    bus.on(EVENT_KEY.DIALOG_END, this.onDialogEnd);
+    bus.on(EVENT_KEY.OPEN_COMMENTS, this.onOpenComments);
+    bus.on(EVENT_KEY.CLOSE_COMMENTS, this.onCloseComments);
+    bus.on(EVENT_KEY.OPEN_SUB_TYPE, this.onOpenSubType);
+    bus.on(EVENT_KEY.CLOSE_SUB_TYPE, this.onCloseSubType);
   },
   unmounted() {
     // console.log('unmounted')
-    bus.off(EVENT_KEY.SINGLE_CLICK_BROADCAST, this.click)
-    bus.off(EVENT_KEY.DIALOG_MOVE, this.onDialogMove)
-    bus.off(EVENT_KEY.DIALOG_END, this.onDialogEnd)
-    bus.off(EVENT_KEY.OPEN_COMMENTS, this.onOpenComments)
-    bus.off(EVENT_KEY.CLOSE_COMMENTS, this.onCloseComments)
-    bus.off(EVENT_KEY.OPEN_SUB_TYPE, this.onOpenSubType)
-    bus.off(EVENT_KEY.CLOSE_SUB_TYPE, this.onCloseSubType)
+    bus.off(EVENT_KEY.SINGLE_CLICK_BROADCAST, this.click);
+    bus.off(EVENT_KEY.DIALOG_MOVE, this.onDialogMove);
+    bus.off(EVENT_KEY.DIALOG_END, this.onDialogEnd);
+    bus.off(EVENT_KEY.OPEN_COMMENTS, this.onOpenComments);
+    bus.off(EVENT_KEY.CLOSE_COMMENTS, this.onCloseComments);
+    bus.off(EVENT_KEY.OPEN_SUB_TYPE, this.onOpenSubType);
+    bus.off(EVENT_KEY.CLOSE_SUB_TYPE, this.onCloseSubType);
   },
   methods: {
     onOpenSubType() {
-      this.commentVisible = true
+      this.commentVisible = true;
     },
     onCloseSubType() {
-      this.commentVisible = false
+      this.commentVisible = false;
     },
-    onDialogMove({tag, e}) {
-      if (this.commentVisible && tag === 'comment') {
-        Utils.$setCss(this.$refs.video, 'transition-duration', `0ms`)
-        Utils.$setCss(this.$refs.video, 'height', `calc(30vh + ${e}px)`)
+    onDialogMove({ tag, e }) {
+      if (this.commentVisible && tag === "comment") {
+        Utils.$setCss(this.$refs.video, "transition-duration", `0ms`);
+        Utils.$setCss(this.$refs.video, "height", `calc(30vh + ${e}px)`);
       }
     },
-    onDialogEnd({tag, isClose}) {
-      if (this.commentVisible && tag === 'comment') {
-        console.log('isClose', isClose)
-        Utils.$setCss(this.$refs.video, 'transition-duration', `300ms`)
+    onDialogEnd({ tag, isClose }) {
+      if (this.commentVisible && tag === "comment") {
+        // console.log('isClose', isClose)
+        Utils.$setCss(this.$refs.video, "transition-duration", `300ms`);
         if (isClose) {
-          this.commentVisible = false
-          Utils.$setCss(this.$refs.video, 'height', '100%')
+          this.commentVisible = false;
+          Utils.$setCss(this.$refs.video, "height", "100%");
         } else {
-          Utils.$setCss(this.$refs.video, 'height', '30vh')
+          Utils.$setCss(this.$refs.video, "height", "30vh");
         }
       }
     },
     onOpenComments(id) {
       if (id === this.item.id) {
-        Utils.$setCss(this.$refs.video, 'transition-duration', `300ms`)
-        Utils.$setCss(this.$refs.video, 'height', '30vh')
-        this.commentVisible = true
+        Utils.$setCss(this.$refs.video, "transition-duration", `300ms`);
+        Utils.$setCss(this.$refs.video, "height", "30vh");
+        this.commentVisible = true;
       }
     },
     onCloseComments(id) {
       if (this.commentVisible) {
-        Utils.$setCss(this.$refs.video, 'transition-duration', `300ms`)
-        Utils.$setCss(this.$refs.video, 'height', '100%')
-        this.commentVisible = false
+        Utils.$setCss(this.$refs.video, "transition-duration", `300ms`);
+        Utils.$setCss(this.$refs.video, "height", "100%");
+        this.commentVisible = false;
       }
     },
-    click({uniqueId, index, type}) {
+    click({ uniqueId, index, type }) {
       // console.log(this.position)
       if (
-          this.position.uniqueId === uniqueId &&
-          this.position.index === index
+        this.position.uniqueId === uniqueId &&
+        this.position.index === index
       ) {
         if (type === EVENT_KEY.ITEM_TOGGLE) {
           if (this.status === SlideItemPlayStatus.Play) {
-            this.pause()
+            this.pause();
           } else {
-            this.play()
+            this.play();
           }
         }
         if (type === EVENT_KEY.ITEM_STOP) {
-          this.$refs.video.currentTime = 0
-          this.ignoreWaiting = true
-          this.pause()
-          setTimeout(() => this.ignoreWaiting = false, 300)
+          this.$refs.video.currentTime = 0;
+          this.ignoreWaiting = true;
+          this.pause();
+          setTimeout(() => (this.ignoreWaiting = false), 300);
         }
         if (type === EVENT_KEY.ITEM_PLAY) {
-          this.$refs.video.currentTime = 0
-          this.ignoreWaiting = true
-          this.play()
-          setTimeout(() => this.ignoreWaiting = false, 300)
+          this.$refs.video.currentTime = 0;
+          this.ignoreWaiting = true;
+          this.play();
+          setTimeout(() => (this.ignoreWaiting = false), 300);
         }
       }
     },
     play() {
-      this.status = SlideItemPlayStatus.Play
-      this.$refs.video.volume = 1
-      this.$refs.video.play()
+      this.status = SlideItemPlayStatus.Play;
+      this.$refs.video.volume = 1;
+      this.$refs.video.play();
     },
     pause() {
-      this.status = SlideItemPlayStatus.Pause
-      this.$refs.video.pause()
+      this.status = SlideItemPlayStatus.Pause;
+      this.$refs.video.pause();
     },
     touchstart(e) {
-      Utils.$stopPropagation(e)
-      this.start.x = e.touches[0].pageX
-      this.last.x = this.playX
-      this.last.time = this.currentTime
+      Utils.$stopPropagation(e);
+      this.start.x = e.touches[0].pageX;
+      this.last.x = this.playX;
+      this.last.time = this.currentTime;
     },
     touchmove(e) {
       // console.log('move',e)
-      Utils.$stopPropagation(e)
-      this.isMove = true
-      this.pause()
-      let dx = e.touches[0].pageX - this.start.x
-      this.playX = this.last.x + dx
-      this.currentTime = this.last.time + Math.ceil(Math.ceil(dx) / this.step)
-      if (this.currentTime <= 0) this.currentTime = 0
-      if (this.currentTime >= this.duration) this.currentTime = this.duration
+      Utils.$stopPropagation(e);
+      this.isMove = true;
+      this.pause();
+      let dx = e.touches[0].pageX - this.start.x;
+      this.playX = this.last.x + dx;
+      this.currentTime = this.last.time + Math.ceil(Math.ceil(dx) / this.step);
+      if (this.currentTime <= 0) this.currentTime = 0;
+      if (this.currentTime >= this.duration) this.currentTime = this.duration;
     },
     touchend(e) {
       // console.log('end', e)
-      Utils.$stopPropagation(e)
-      if (this.isPlaying) return
-      setTimeout(() => this.isMove = false, 1000)
-      this.$refs.video.currentTime = this.currentTime
-      this.play()
-    }
-  }
-}
+      Utils.$stopPropagation(e);
+      if (this.isPlaying) return;
+      setTimeout(() => (this.isMove = false), 1000);
+      this.$refs.video.currentTime = this.currentTime;
+      this.play();
+    },
+  },
+};
 </script>
 
 <style scoped lang="less">
@@ -362,7 +386,6 @@ export default {
   transform: scale(0);
 }
 
-
 .video-wrapper {
   position: relative;
   font-size: 14rem;
@@ -372,7 +395,7 @@ export default {
   video {
     width: 100%;
     height: 100%;
-    transition: height, margin-top .3s;
+    transition: height, margin-top 0.3s;
     //background: black;
     /*position: absolute;*/
   }
@@ -418,7 +441,7 @@ export default {
       position: absolute;
       bottom: 0;
       width: 100%;
-      transition: all .3s;
+      transition: all 0.3s;
 
       .toolbar {
         //width: 40px;
@@ -480,7 +503,9 @@ export default {
           }
         }
 
-        .love, .message, .share {
+        .love,
+        .message,
+        .share {
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -501,7 +526,6 @@ export default {
         .loved {
           background: red;
         }
-
       }
 
       .content {
@@ -539,7 +563,6 @@ export default {
           }
         }
 
-
         .music {
           position: relative;
           width: 60%;
@@ -559,7 +582,6 @@ export default {
         align-items: center;
 
         .comment {
-
           .type-comment {
             display: flex;
             background: rgb(130, 21, 44);
@@ -584,9 +606,7 @@ export default {
               .text {
                 color: white;
               }
-
             }
-
           }
 
           .loveds {
@@ -598,7 +618,7 @@ export default {
             position: relative;
             margin-bottom: 20px;
             animation: test 1s;
-            animation-delay: .5s;
+            animation-delay: 0.5s;
 
             .avatar {
               width: 36px;
@@ -628,7 +648,6 @@ export default {
               display: none;
               transform: translate3d(0, -60px, 0);
             }
-
           }
         }
       }
@@ -664,14 +683,14 @@ export default {
       @radius: 10rem;
 
       @h: 1rem;
-      @tr: height .3s;;
+      @tr: height 0.3s;
 
       .bg {
         transition: @tr;
         position: absolute;
         width: 100%;
         height: @h;
-        background: rgba(#000, .3);
+        background: rgba(#000, 0.3);
         border-radius: @radius;
       }
 
@@ -682,12 +701,12 @@ export default {
         height: @h;
         width: @p;
         border-radius: @radius 0 0 @radius;
-        background: rgba(#000, .8);
+        background: rgba(#000, 0.8);
         z-index: 1;
       }
 
       .point {
-        transition: all .2s;
+        transition: all 0.2s;
         width: @h+2;
         height: @h+2;
         border-radius: 50%;
@@ -722,7 +741,7 @@ export default {
 
       .bg {
         height: @h;
-        background: rgba(#000, .8);
+        background: rgba(#000, 0.8);
       }
 
       .progress-line {
@@ -738,5 +757,4 @@ export default {
     }
   }
 }
-
 </style>

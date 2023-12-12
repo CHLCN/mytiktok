@@ -44,7 +44,7 @@ const state = reactive({})
 
 async function loved() {
   Utils.updateItem(props, 'is_favorite', !props.item.is_favorite, emit)
-  console.log(props)
+//   console.log(props)
   if(!props.item.is_favorite){
     let res = await request.post(
         "/favorite/action/",

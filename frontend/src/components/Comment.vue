@@ -1,19 +1,25 @@
 <template>
   <from-bottom-dialog
-      :page-id="pageId"
-      :modelValue="modelValue"
-      @update:modelValue="e=>$emit('update:modelValue',e)"
-      @cancel="cancel"
-      :show-heng-gang="false"
-      maskMode="light"
-      :height="height"
-      tag="comment"
-      mode="white">
+    :page-id="pageId"
+    :modelValue="modelValue"
+    @update:modelValue="(e) => $emit('update:modelValue', e)"
+    @cancel="cancel"
+    :show-heng-gang="false"
+    maskMode="light"
+    :height="height"
+    tag="comment"
+    mode="white"
+  >
     <template v-slot:header>
       <div class="title">
-        <dy-back mode="dark" img="close" direction="right" style="opacity: 0;"/>
+        <dy-back mode="dark" img="close" direction="right" style="opacity: 0" />
         <span>2.7w条评论</span>
-        <dy-back mode="dark" img="close" direction="right" @click.stop="cancel"/>
+        <dy-back
+          mode="dark"
+          img="close"
+          direction="right"
+          @click.stop="cancel"
+        />
       </div>
     </template>
     <div class="comment">
@@ -23,7 +29,7 @@
             <!--             v-longpress="e => showOptions(item)"-->
             <div class="main">
               <div class="content">
-                <img :src="item.avatar" alt="" class="head-image">
+                <img :src="item.avatar" alt="" class="head-image" />
                 <div class="comment-container">
                   <div class="name">{{ item.name }}</div>
                   <div class="detail">{{ item.text }}</div>
@@ -33,10 +39,18 @@
                       <div class="reply-text">回复</div>
                     </div>
                     <div class="love" @click="loved(item)">
-                      <img v-show="item.isLoved" src="../assets/img/icon/components/like-red-small.png" alt=""
-                           class="love-image">
-                      <img v-show="!item.isLoved" src="../assets/img/icon/components/like-gray-small.png" alt=""
-                           class="love-image">
+                      <img
+                        v-show="item.isLoved"
+                        src="../assets/img/icon/components/like-red-small.png"
+                        alt=""
+                        class="love-image"
+                      />
+                      <img
+                        v-show="!item.isLoved"
+                        src="../assets/img/icon/components/like-gray-small.png"
+                        alt=""
+                        class="love-image"
+                      />
                       <span>{{ formatNumber(item.loveNum) }}</span>
                     </div>
                   </div>
@@ -47,7 +61,7 @@
               <div class="reply" v-for="child in item.children">
                 <!--                 v-longpress="e => showOptions(child)"-->
                 <div class="content">
-                  <img :src="child.avatar" alt="" class="head-image">
+                  <img :src="child.avatar" alt="" class="head-image" />
                   <div class="comment-container">
                     <div class="name">
                       {{ child.name }}
@@ -61,10 +75,18 @@
                         <div class="reply-text">回复</div>
                       </div>
                       <div class="love" @click="loved(item)">
-                        <img v-show="item.isLoved" src="../assets/img/icon/components/like-red-small.png" alt=""
-                             class="love-image">
-                        <img v-show="!item.isLoved" src="../assets/img/icon/components/like-gray-small.png" alt=""
-                             class="love-image">
+                        <img
+                          v-show="item.isLoved"
+                          src="../assets/img/icon/components/like-red-small.png"
+                          alt=""
+                          class="love-image"
+                        />
+                        <img
+                          v-show="!item.isLoved"
+                          src="../assets/img/icon/components/like-gray-small.png"
+                          alt=""
+                          class="love-image"
+                        />
                         <span>{{ formatNumber(item.loveNum) }}</span>
                       </div>
                     </div>
@@ -79,42 +101,62 @@
             </div>
           </div>
         </div>
-        <no-more/>
+        <no-more />
       </div>
 
-      <Loading v-else style="position:absolute;"/>
+      <Loading v-else style="position: absolute" />
 
       <transition name="fade">
-        <Mask v-if="isCall" mode="lightgray" @click="isCall = false"/>
+        <Mask v-if="isCall" mode="lightgray" @click="isCall = false" />
       </transition>
       <div class="input-toolbar">
         <transition name="fade">
           <div class="call-friend" v-if="isCall">
-            <div class="friend" v-for="item in friends.all" @click="toggleCall(item)">
-              <img :style="item.select?'opacity: .5;':''" class="avatar" :src="$imgPreview(item.avatar)" alt="">
+            <div
+              class="friend"
+              v-for="item in friends.all"
+              @click="toggleCall(item)"
+            >
+              <img
+                :style="item.select ? 'opacity: .5;' : ''"
+                class="avatar"
+                :src="$imgPreview(item.avatar)"
+                alt=""
+              />
               <span>{{ item.name }}</span>
-              <img v-if="item.select" class="checked" src="../assets/img/icon/components/check/check-red-share.png">
+              <img
+                v-if="item.select"
+                class="checked"
+                src="../assets/img/icon/components/check/check-red-share.png"
+              />
             </div>
           </div>
         </transition>
 
         <div class="toolbar">
           <div class="input-wrapper">
-            <AutoInput v-model="comment"></AutoInput>
+            <AutoInput v-model="comment" class="myinput"></AutoInput>
             <div class="right">
-              <img src="../assets/img/icon/message/call.png" @click="isCall = !isCall">
-              <img src="../assets/img/icon/message/emoji-black.png">
+              <img
+                src="../assets/img/icon/message/call.png"
+                @click="isCall = !isCall"
+              />
+              <img src="../assets/img/icon/message/emoji-black.png" />
             </div>
           </div>
-          <img v-if="comment" src="../assets/img/icon/message/up.png" @click="send">
+          <img
+            v-if="comment"
+            src="../assets/img/icon/message/up.png"
+            @click="send"
+          />
         </div>
       </div>
       <ConfirmDialog
-          title="私信给"
-          ok-text="发送"
-          v-model:visible="showPrivateChat"
+        title="私信给"
+        ok-text="发送"
+        v-model:visible="showPrivateChat"
       >
-        <Search mode="light" v-model="test" :isShowSearchIcon="false"/>
+        <Search mode="light" v-model="test" :isShowSearchIcon="false" />
       </ConfirmDialog>
     </div>
   </from-bottom-dialog>
@@ -123,7 +165,7 @@
 <script>
 import AutoInput from "./AutoInput";
 import ConfirmDialog from "./dialog/ConfirmDialog";
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 import FromBottomDialog from "./dialog/FromBottomDialog";
 import Loading from "./Loading";
 import Search from "./Search";
@@ -135,195 +177,218 @@ export default {
     ConfirmDialog,
     FromBottomDialog,
     Loading,
-    Search
+    Search,
   },
   props: {
     modelValue: false,
     videoId: {
       type: String,
-      default: null
+      default: null,
     },
     pageId: {
       type: String,
-      default: 'home-index'
+      default: "home-index",
     },
     height: {
       type: String,
-      default: '70vh'
+      default: "70vh",
     },
   },
   computed: {
-    ...mapState(['friends'])
+    ...mapState(["friends"]),
   },
   watch: {
     modelValue(newVale) {
       if (newVale) {
-        this.getData()
+        this.getData();
       } else {
-        this.comments = []
+        this.comments = [];
       }
-    }
+    },
   },
   data() {
     return {
-      comment: '',
-      test: '',
+      comment: "",
+      test: "",
       comments: [],
       options: [
-        {id: 1, name: '私信回复'},
-        {id: 2, name: '复制'},
-        {id: 3, name: '搜一搜'},
-        {id: 4, name: '举报'},
+        { id: 1, name: "私信回复" },
+        { id: 2, name: "复制" },
+        { id: 3, name: "搜一搜" },
+        { id: 4, name: "举报" },
       ],
       selectRow: {},
       showPrivateChat: false,
       isInput: false,
       isCall: false,
-    }
+    };
   },
   mounted() {
-    this.getData()
+    this.getData();
+    // var p = document.getElementById("myinput");
+    // p.focus();
   },
   methods: {
     send() {
       this.comments.push({
-        id: '2',
-        avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
-        name: '成都旅行',
+        id: "2",
+        avatar: new URL("../assets/img/icon/avatar/2.png", import.meta.url)
+          .href,
+        name: "XG",
         text: this.comment,
         loveNum: 27,
         isLoved: false,
-        time: '2021-08-24 20:33',
-        children: []
-      })
-      this.comment = ''
-      this.isCall = false
+        time: "2021-08-24 20:33",
+        children: [],
+      });
+      this.comment = "";
+      this.isCall = false;
     },
     async getData() {
-      await this.$sleep(500)
+      await this.$sleep(500);
       this.comments = [
         {
-          id: '1',
-          avatar: new URL('../assets/img/icon/avatar/1.png', import.meta.url).href,
-          name: '彭雨晏',
-          text: '这到底是怎么了？艺人一个接一个的出事',
+          id: "1",
+          avatar: new URL("../assets/img/icon/avatar/1.png", import.meta.url)
+            .href,
+          name: "彭雨晏",
+          text: "这到底是怎么了？艺人一个接一个的出事",
           loveNum: 57000,
           isLoved: false,
-          time: '2021-08-24 20:10',
+          time: "2021-08-24 20:10",
           children: [
             {
-              id: '10',
-              avatar: new URL('../assets/img/icon/avatar/2.png', import.meta.url).href,
-              name: 'sugar少吃一点',
-              replay: '',
-              text: '要么之前吴京说了一句话对一个小女孩说，以后别来娱乐圈',
+              id: "10",
+              avatar: new URL(
+                "../assets/img/icon/avatar/2.png",
+                import.meta.url
+              ).href,
+              name: "sugar少吃一点",
+              replay: "",
+              text: "要么之前吴京说了一句话对一个小女孩说，以后别来娱乐圈",
               loveNum: 9174,
               isLoved: false,
-              time: '2022-08-24 20:25',
+              time: "2022-08-24 20:25",
             },
             {
-              id: '11',
-              avatar: new URL('../assets/img/icon/avatar/3.png', import.meta.url).href,
-              name: '我不吃晚饭了',
-              replay: 'sugar少吃一点',
-              text: '@nana max',
+              id: "11",
+              avatar: new URL(
+                "../assets/img/icon/avatar/3.png",
+                import.meta.url
+              ).href,
+              name: "我不吃晚饭了",
+              replay: "sugar少吃一点",
+              text: "@nana max",
               loveNum: 695,
               isLoved: false,
-              time: '2023-01-24 20:29',
+              time: "2023-01-24 20:29",
             },
             {
-              id: '12',
-              avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
-              name: '我劝你善良',
-              replay: 'sugar少吃一点',
-              text: '对对 我也刷到过这个视频',
+              id: "12",
+              avatar: new URL(
+                "../assets/img/icon/avatar/4.png",
+                import.meta.url
+              ).href,
+              name: "我劝你善良",
+              replay: "sugar少吃一点",
+              text: "对对 我也刷到过这个视频",
               loveNum: 1253,
               isLoved: false,
-              time: '2023-02-23 20:59',
+              time: "2023-02-23 20:59",
             },
-          ]
+          ],
         },
         {
-          id: '2',
-          avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
-          name: '成都旅行',
-          text: '开车回来4个小时，爬山两小时，如果当天天气好，你一定会喜欢上这里，是真的美！一日游',
+          id: "2",
+          avatar: new URL("../assets/img/icon/avatar/4.png", import.meta.url)
+            .href,
+          name: "成都旅行",
+          text: "开车回来4个小时，爬山两小时，如果当天天气好，你一定会喜欢上这里，是真的美！一日游",
           loveNum: 27,
           isLoved: false,
-          time: '2021-08-24 20:33',
+          time: "2021-08-24 20:33",
           children: [
             {
-              id: '20',
-              avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
-              name: '成都旅行',
-              replay: '',
-              text: '甘海子，汶川转经楼村',
+              id: "20",
+              avatar: new URL(
+                "../assets/img/icon/avatar/4.png",
+                import.meta.url
+              ).href,
+              name: "成都旅行",
+              replay: "",
+              text: "甘海子，汶川转经楼村",
               loveNum: 32,
               isLoved: false,
-              time: '2021-08-24 20:34',
+              time: "2021-08-24 20:34",
             },
             {
-              id: '21',
-              avatar: new URL('../assets/img/icon/avatar/5.png', import.meta.url).href,
-              name: 'August',
-              replay: '成都旅行',
-              text: '@NickyOO @AW%',
+              id: "21",
+              avatar: new URL(
+                "../assets/img/icon/avatar/5.png",
+                import.meta.url
+              ).href,
+              name: "August",
+              replay: "成都旅行",
+              text: "@NickyOO @AW%",
               loveNum: 0,
               isLoved: false,
-              time: '2021-08-25 03:29',
+              time: "2021-08-25 03:29",
             },
             {
-              id: '22',
-              avatar: new URL('../assets/img/icon/avatar/6.png', import.meta.url).href,
-              name: '用户121342411',
-              replay: '成都旅行',
-              text: '自己可以开私家车进去不',
+              id: "22",
+              avatar: new URL(
+                "../assets/img/icon/avatar/6.png",
+                import.meta.url
+              ).href,
+              name: "用户121342411",
+              replay: "成都旅行",
+              text: "自己可以开私家车进去不",
               loveNum: 1,
               isLoved: false,
-              time: '2021-08-25 07:29',
+              time: "2021-08-25 07:29",
             },
-          ]
-        }
-      ]
+          ],
+        },
+      ];
     },
     cancel() {
-      this.$emit("update:modelValue", false)
-      this.$emit("close")
+      this.$emit("update:modelValue", false);
+      this.$emit("close");
     },
     toggleCall(item) {
-      item.select = !item.select
-      let name = item.name
-      if (this.comment.includes('@' + name)) {
-        this.comment = this.comment.replace(`@${name} `, '')
+      item.select = !item.select;
+      let name = item.name;
+      if (this.comment.includes("@" + name)) {
+        this.comment = this.comment.replace(`@${name} `, "");
       } else {
-        this.comment += `@${name} `
+        this.comment += `@${name} `;
       }
     },
     loved(row) {
       if (row.isLoved) {
-        row.loveNum--
+        row.loveNum--;
       } else {
-        row.loveNum++
+        row.loveNum++;
       }
-      row.isLoved = !row.isLoved
+      row.isLoved = !row.isLoved;
     },
     showOptions(row) {
-      this.$showSelectDialog(this.options, e => {
+      this.$showSelectDialog(this.options, (e) => {
         if (e.id === 1) {
-          this.selectRow = row
-          this.showPrivateChat = true
+          this.selectRow = row;
+          this.showPrivateChat = true;
         }
-      })
+      });
     },
     // showComment() {
     //     this.isCommenting = !this.isCommenting;
     //     console.log(666)
     // }
     call() {
-      console.log(this.commit)
-    }
-  }
-}
+      console.log(this.commit);
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -444,13 +509,11 @@ export default {
           flex: 1;
           margin-right: 20rem;
 
-
           .name {
             color: @second-text-color;
             margin-bottom: 5rem;
             display: flex;
             align-items: center;
-
 
             .reply-user {
               margin-left: 5rem;
@@ -504,7 +567,6 @@ export default {
       }
     }
   }
-
 
   @normal-bg-color: rgb(35, 38, 47);
   @chat-bg-color: rgb(105, 143, 244);
@@ -601,11 +663,11 @@ export default {
 
 .comment-enter-active,
 .comment-leave-active {
-  transition: all .15s ease;
+  transition: all 0.15s ease;
 }
 
-.comment-enter-from, .comment-leave-to {
+.comment-enter-from,
+.comment-leave-to {
   transform: translateY(60vh);
 }
-
 </style>
