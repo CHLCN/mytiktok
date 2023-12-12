@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/google/uuid"
 )
 
 type VideoServiceImpl struct {
@@ -36,20 +35,30 @@ func GetVideoServiceInstance() *VideoServiceImpl {
 	return videoServiceImp
 }
 
-func (videoService *VideoServiceImpl) Publish(data *multipart.FileHeader, title string, userId int64) error {
-	// 保证唯一的 videoName
-	videoName := uuid.New().String()
-	err := UploadVideoToOSS(data, videoName)
-	if err != nil {
-		return err
-	}
-	err = dao.UploadVideo(videoName, userId, title, "recommend-video")
+func (videoService *VideoServiceImpl) Publish(autherId int64, title string, playUrl string, coverUrl string) error {
+
+	err := dao.UploadVideo(autherId, title, playUrl, coverUrl, "recommend-video")
 	if err != nil {
 		log.Println("视频存入数据库失败！")
 		return err
 	}
 	return nil
 }
+
+// func (videoService *VideoServiceImpl) Publish(data *multipart.FileHeader, title string, userId int64) error {
+// 	// 保证唯一的 videoName
+// 	videoName := uuid.New().String()
+// 	err := UploadVideoToOSS(data, videoName)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	err = dao.UploadVideo(videoName, userId, title, "recommend-video")
+// 	if err != nil {
+// 		log.Println("视频存入数据库失败！")
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func (videoService *VideoServiceImpl) Feed(latestTime time.Time, userId int64) ([]Video, time.Time, error) {
 	videos := make([]Video, 0, config.VIDEO_NUM_PER_REFRESH)

@@ -15,24 +15,15 @@ type VideoListResponse struct {
 	VideoList []service.Video `json:"video_list"`
 }
 
-// Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
-	token := c.PostForm("token")
-	log.Println("token:", token)
-	userId := c.GetInt64("userId")
-	data, err := c.FormFile("data")
-	if err != nil {
-		c.JSON(http.StatusOK, Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		})
-		return
-	}
-	title := c.PostForm("title")
-	log.Printf("视频 title: %v\n", title)
+	userId := c.Query("author_id")
+	log.Println("userId: ", userId)
+	autherId, _ := strconv.ParseInt(userId, 10, 64)
+	title := c.Query("title")
+	playUrl := c.Query("play_url")
+	coverUrl := c.Query("cover_url")
 	videoService := service.GetVideoServiceInstance()
-	// 从 token 中获取 userId
-	err = videoService.Publish(data, title, userId)
+	err := videoService.Publish(autherId, title, playUrl, coverUrl)
 	if err != nil {
 		log.Println("上传文件失败")
 		c.JSON(http.StatusOK, Response{
@@ -41,7 +32,6 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
 		StatusMsg:  fmt.Sprintf("《%s》视频上传成功", title),

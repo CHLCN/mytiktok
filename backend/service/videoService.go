@@ -2,7 +2,6 @@ package service
 
 import (
 	"backend/dao"
-	"mime/multipart"
 	"time"
 )
 
@@ -17,7 +16,8 @@ type Video struct {
 
 type VideoService interface {
 	// Publish 将传入的视频流保存到 OSS 中，并在数据库中添加记录
-	Publish(data *multipart.FileHeader, title string, userId int64) error
+	// Publish(data *multipart.FileHeader, title string, userId int64) error
+	Publish(int64, string, string, string) error
 
 	// Feed 通过传入时间，当前用户的id，返回对应的返回视频流，以及视频流中最早的视频投稿时间
 	Feed(latestTime time.Time, userId int64) ([]Video, time.Time, error)

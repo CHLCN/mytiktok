@@ -24,7 +24,8 @@ func initRouter(r *gin.Engine) {
 	apiRouter.POST("/user/register/", controller.Register)
 	apiRouter.POST("/user/password_login/", controller.PasswordLogin)
 	apiRouter.POST("/user/login", controller.Login)
-	apiRouter.POST("/publish/action/", jwt.AuthBody(), controller.Publish)
+	// apiRouter.POST("/publish/action/", jwt.AuthBody(), controller.Publish)
+	apiRouter.POST("/publish/action/", controller.Publish)
 	apiRouter.GET("/me/mypost", jwt.AuthWithoutLogin(), controller.PublishList)
 
 	// 互动接口

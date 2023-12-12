@@ -33,17 +33,30 @@ func SaveVideo(video Video) error {
 }
 
 // UploadVideo 上传视频
-func UploadVideo(videoName string, authorId int64, videoTitle string, Type string) error {
+func UploadVideo(authorId int64, videoTitle string, playUrl string, coverUrl string, Type string) error {
 	var video Video
 	video.AuthorId = authorId
 	video.Title = videoTitle
-	video.PlayUrl = config.PLAY_URL_PREFIX + videoName + ".mp4"
-	video.CoverUrl = video.PlayUrl + config.COVER_URL_SUFFIX
+	video.PlayUrl = playUrl
+	video.CoverUrl = coverUrl
 	video.CreatedAt = time.Now()
 	video.UpdatedAt = time.Now()
 	video.Type = Type
 	return SaveVideo(video)
 }
+
+// // UploadVideo 上传视频
+// func UploadVideo(videoName string, authorId int64, videoTitle string, Type string) error {
+// 	var video Video
+// 	video.AuthorId = authorId
+// 	video.Title = videoTitle
+// 	video.PlayUrl = config.PLAY_URL_PREFIX + videoName + ".mp4"
+// 	video.CoverUrl = video.PlayUrl + config.COVER_URL_SUFFIX
+// 	video.CreatedAt = time.Now()
+// 	video.UpdatedAt = time.Now()
+// 	video.Type = Type
+// 	return SaveVideo(video)
+// }
 
 // GetVideosByUserId 根据用户 Id 获取该用户已发布的所有视频
 func GetVideosByUserId(userId int64) ([]Video, error) {
