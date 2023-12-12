@@ -1,87 +1,129 @@
 <template>
   <div class="Publish">
-    <video id="video" autoplay="autoplay" style="width: 100%;height:calc(100% - 60rem);"></video>
-    <div class="footer">
-      <SlideRowList v-model:active-index="activeIndex">
-        <SlideItem style="min-width: 20vw;min-height: 60rem;"></SlideItem>
-        <SlideItem style="min-width: 20vw;min-height: 60rem;"></SlideItem>
-        <SlideItem style="min-width: 25vw;min-height: 60rem;" @click="activeIndex = 0">
-          <span :class="activeIndex + 2 === 2?'active':''">分段拍</span>
-        </SlideItem>
-        <SlideItem style="min-width: 20vw;min-height: 60rem;" @click="activeIndex = 1">
-          <span :class="activeIndex + 2 === 3?'active':''">快拍</span>
-        </SlideItem>
-        <SlideItem style="min-width: 20vw;min-height: 60rem;" @click="activeIndex = 2">
-          <span :class="activeIndex + 2 === 4?'active':''">影集</span>
-        </SlideItem>
-        <SlideItem style="min-width: 20vw;min-height: 60rem;" @click="activeIndex = 3">
-          <span :class="activeIndex + 2 === 5?'active':''">开直播</span>
-        </SlideItem>
-      </SlideRowList>
-    </div>
-    <div class="float">
-      <img class="close" src="../../assets/img/icon/close-white.png" alt="" @click="$back">
-      <div class="choose-music">
-        <img src="../../assets/img/icon/close-white.png" alt="">
-        <span>选择音乐</span>
-      </div>
-      <div class="toolbar">
-        <div class="tool" @click.stop="$emit('showComments')">
-          <img src="../../assets/img/icon/close-white.png" alt="">
-          <span>翻转</span>
-        </div>
-        <div class="tool" @click.stop="$emit('showComments')">
-          <img src="../../assets/img/icon/close-white.png" alt="">
-          <span>快慢速</span>
-        </div>
-        <div class="tool" @click.stop="$emit('showComments')">
-          <img src="../../assets/img/icon/close-white.png" alt="">
-          <span>滤镜</span>
-        </div>
-        <div class="tool" @click.stop="$emit('showComments')">
-          <img src="../../assets/img/icon/close-white.png" alt="">
-          <span>美化</span>
-        </div>
-        <div class="tool" @click.stop="$emit('showComments')">
-          <img src="../../assets/img/icon/close-white.png" alt="">
-          <span>倒计时</span>
+    <BaseHeader mode="light" backMode="dark" backImg="back"> </BaseHeader>
+    <div class="content">
+      <div class="desc">
+        <div class="title">发布</div>
+        <div class="main">
+          <textarea
+            class="left"
+            rows="5"
+            v-model="des"
+            placeholder="添加文字描述..."
+          ></textarea>
+          <div
+            class="right"
+            :style="{
+              backgroundImage: 'url(' + bgimg + ')',
+              backgroundSize: '50px 100px',
+            }"
+            ref="right"
+          >
+            <input
+              type="file"
+              ref="uploadInput"
+              id="uploadBtn"
+              class="file"
+              accept="video/MP4"
+              @change="handleFileUpload"
+            />
+
+            <input type="button" class="btn" @click="clickFile" />
+          </div>
         </div>
       </div>
+      <dy-button
+        class="pub-btn"
+        type="primary"
+        :loading="loading"
+        :active="false"
+        :disabled="disabled"
+        @click="publish"
+        >发布
+      </dy-button>
     </div>
   </div>
 </template>
 <script>
-import {mapState} from "vuex";
-
+import request from "../../utils/request";
 export default {
   name: "Publish",
   data() {
     return {
       video: null,
-      activeIndex: 1
-    }
+      des: "",
+      thumbnailUrl: "",
+      bgimg: "../../src/assets/img/upload/video.svg",
+      loading: false,
+    };
   },
   computed: {
-    ...mapState(['bodyHeight', 'bodyWidth'])
-  },
-  mounted() {
-    //获得video摄像头区域
-    this.video = document.getElementById("video");
-    this.getMedia()
-  },
-  methods: {
-    getMedia() {
-      let constraints = {video: {width: this.bodyWidth, height: this.bodyHeight - 60}, audio: false};
-      let promise = navigator.mediaDevices.getUserMedia(constraints);
-      promise.then((MediaStream) => {
-        this.video.srcObject = MediaStream;
-        this.video.play();
-      }).catch(function (PermissionDeniedError) {
-        console.log(PermissionDeniedError);
-      })
+    disabled() {
+      return !(this.video && this.des);
     },
   },
-}
+  mounted() {},
+  methods: {
+    clickFile() {
+      const input = document.querySelector(".file");
+      input.click();
+    },
+    handleFileUpload() {
+      //   const file = event.target.files[0];
+      let base64URL = "";
+      this.video = this.$refs.uploadInput.files[0];
+      //   console.log(this.video);
+      const video = document.createElement("video");
+      video.setAttribute("crossOrigin", "anonymous"); //处理跨域
+      video.setAttribute("src", URL.createObjectURL(this.video));
+      video.currentTime = 1;
+
+      video.addEventListener("loadeddata", function () {
+        let canvas = document.createElement("canvas");
+        //使用视频的宽高作为canvas、预览图的宽高
+        let width = video.videoWidth;
+        let height = video.videoHeight;
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(video, 0, 0, width, height); //绘制canvas
+        base64URL = canvas.toDataURL("image/jpeg"); //转换为base64，图片格式默认为png，这里修改为jpeg
+      });
+      setTimeout(() => {
+        this.bgimg = base64URL;
+        // console.log(this.bgimg);
+      }, 500);
+    },
+    async publish() {
+      let user_id = this.$store.state.user_id;
+      //   const link = document.createElement("a");
+      //   link.href = this.bgimg;
+      //   link.download = ".image.png"; // 设置下载的文件名
+      //   link.click(); // 触发下载
+      this.loading = true;
+      let res = await request.post(
+        "/publish/action",
+        {},
+        {
+          params: {
+            author_id: user_id,
+            title: this.des,
+            play_url: "/src/assets/video/" + this.video.name,
+            cover_url:
+              "/src/assets/img/thumb/" + this.video.name.slice(0, -4) + ".png",
+            // cover_url: this.bgimg,
+          },
+        }
+      );
+      //   console.log(res.data);
+      if (res.data.status_code == 0) {
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000);
+        this.$router.push("/home");
+      }
+    },
+  },
+};
 </script>
 
 <style scoped lang="less">
@@ -94,75 +136,73 @@ export default {
   bottom: 0;
   top: 0;
   overflow: auto;
-  color: white;
-  background: black;
-
-  .footer {
-    font-size: 15rem;
-    font-weight: bold;
-    color: @second-text-color;
-
-    .base-slide-item {
-      display: flex;
-      align-items: center;
-    }
-
-    .active {
-      color: white;
-    }
-  }
-
-  .float {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: calc(100% - 60px);
-
-    .close {
-      position: absolute;
-      left: 20rem;
-      top: 20rem;
-      width: 20rem;
-      height: 20rem;
-    }
-
-    .choose-music {
-      position: absolute;
-      left: 50%;
-      top: 20rem;
-      transform: translateX(-50%);
-      border-radius: 20rem;
-      background: #333333;
-      padding: 5rem 15rem;
-      display: flex;
-      align-items: center;
-
-      img {
-        margin-right: 5rem;
-        width: 12rem;
-        height: 12rem;
+  color: black;
+  font-size: 14rem;
+  background: white;
+  .content {
+    text-align: center;
+    padding-left: 10rem;
+    padding-right: 10rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    .desc {
+      flex: 1;
+      .title {
+        font-size: large;
+        font-weight: bold;
+        margin-top: 20rem;
       }
-    }
-
-    .toolbar {
-      position: absolute;
-      top: 20rem;
-      right: 10rem;
-
-      .tool {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+      .main {
+        margin-top: 20rem;
         margin-bottom: 20rem;
-        font-size: 10rem;
+        display: flex;
+        .left {
+          flex: 2;
+          outline: none;
+          border: none;
+          background-color: whitesmoke;
+          font-size: 16px;
+          font-family: Arial;
+          color: black;
+          border-radius: 4px;
+          padding: 10px;
+          margin-right: 10px;
+        }
+        .right {
+          flex: 1;
+          background: center center no-repeat;
+          background-size: 40px 40px;
+          opacity: 0.8;
+          z-index: 999;
+          //   background: #fff;
+          border: 1px dashed #d7dde4;
+          border-radius: 4px;
+          text-align: center;
+          overflow: hidden;
+          transition: border-color 0.2s ease;
+          margin-left: 3px;
 
-        img {
-          width: 20rem;
-          height: 20rem;
-          margin-bottom: 5rem;
+          .file {
+            // 将type="file"隐藏
+            display: none;
+          }
+          .btn {
+            height: 100%;
+            width: 100%;
+            flex: 1;
+            background: rgba(0, 0, 0, 0);
+            z-index: 1;
+            border: none;
+            cursor: pointer;
+          }
         }
       }
+    }
+
+    .pub-btn {
+      position: relative;
+      bottom: 30rem;
     }
   }
 }
