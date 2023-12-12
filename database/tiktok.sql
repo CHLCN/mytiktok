@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50744
 File Encoding         : 65001
 
-Date: 2023-12-12 21:03:09
+Date: 2023-12-13 00:35:38
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,18 +32,21 @@ CREATE TABLE `comment` (
   KEY `fk_comment_vide` (`video_id`) USING BTREE,
   CONSTRAINT `fk_comment_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_comment_vide` FOREIGN KEY (`video_id`) REFERENCES `video` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of comment
 -- ----------------------------
-INSERT INTO `comment` VALUES ('1', '1', '1','秒了' ,'1','2023-11-09 21:52:26', '2023-11-09 21:52:26');
-INSERT INTO `comment` VALUES ('2', '2', '1','撕碎' ,'1','2023-11-08 21:52:26', '2023-11-08 21:52:26');
-INSERT INTO `comment` VALUES ('3', '3', '1','仙品' ,'1','2023-11-07 21:52:26', '2023-11-07 21:52:26');
-INSERT INTO `comment` VALUES ('4', '3', '2','女五一！！！' ,'1','2023-11-07 21:52:26', '2023-11-07 21:52:26');
-INSERT INTO `comment` VALUES ('5', '2', '3','四秒表震碎' ,'1','2023-11-06 21:52:26', '2023-11-06 21:52:26');
-INSERT INTO `comment` VALUES ('6', '1', '4','指路直拍' ,'1','2023-11-07 21:52:26', '2023-11-07 21:52:26');
-INSERT INTO `comment` VALUES ('7', '2', '4','仙品仙品' ,'1','2023-11-05 21:52:26', '2023-11-05 21:52:26');
+INSERT INTO `comment` VALUES ('1', '1', '1', '秒了', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `comment` VALUES ('2', '2', '1', '撕碎', '1', '2023-11-08 21:52:26', '2023-11-08 21:52:26');
+INSERT INTO `comment` VALUES ('3', '3', '1', '仙品', '1', '2023-11-07 21:52:26', '2023-11-07 21:52:26');
+INSERT INTO `comment` VALUES ('4', '3', '2', '女五一！！！', '1', '2023-11-07 21:52:26', '2023-11-07 21:52:26');
+INSERT INTO `comment` VALUES ('5', '2', '3', '四秒表震碎', '1', '2023-11-06 21:52:26', '2023-11-06 21:52:26');
+INSERT INTO `comment` VALUES ('6', '1', '4', '指路直拍', '1', '2023-11-07 21:52:26', '2023-11-07 21:52:26');
+INSERT INTO `comment` VALUES ('7', '2', '4', '仙品仙品', '1', '2023-11-05 21:52:26', '2023-11-05 21:52:26');
+INSERT INTO `comment` VALUES ('8', '1', '21', '全都秒了！', '1', '2023-11-10 23:03:08', '2023-12-12 23:03:25');
+INSERT INTO `comment` VALUES ('9', '1', '22', '吴晓梅坠棒！', '1', '2023-11-05 21:52:26', '2023-11-05 21:52:26');
+
 -- ----------------------------
 -- Table structure for `like`
 -- ----------------------------
@@ -60,17 +63,21 @@ CREATE TABLE `like` (
   KEY `fk_like_video` (`video_id`) USING BTREE,
   CONSTRAINT `fk_like_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_like_video` FOREIGN KEY (`video_id`) REFERENCES `video` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of like
 -- ----------------------------
-INSERT INTO `like` VALUES ('1', '2', '1','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
-INSERT INTO `like` VALUES ('2', '2', '2','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
-INSERT INTO `like` VALUES ('3', '1', '1','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
-INSERT INTO `like` VALUES ('4', '1', '2','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
-INSERT INTO `like` VALUES ('5', '1', '3','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
-INSERT INTO `like` VALUES ('6', '3', '2','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `like` VALUES ('1', '2', '1', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `like` VALUES ('2', '2', '2', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `like` VALUES ('3', '1', '1', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `like` VALUES ('4', '1', '2', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `like` VALUES ('5', '1', '3', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `like` VALUES ('6', '3', '2', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `like` VALUES ('7', '2', '22', '1', '2023-12-12 22:51:02', '2023-12-12 22:51:02');
+INSERT INTO `like` VALUES ('8', '2', '3', '1', '2023-12-13 00:14:04', '2023-12-13 00:14:04');
+INSERT INTO `like` VALUES ('9', '2', '4', '2', '2023-12-13 00:19:58', '2023-12-13 00:19:58');
+
 -- ----------------------------
 -- Table structure for `message`
 -- ----------------------------
@@ -115,9 +122,10 @@ CREATE TABLE `relation` (
 -- ----------------------------
 -- Records of relation
 -- ----------------------------
-INSERT INTO `relation` VALUES ('1', '2', '3','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
-INSERT INTO `relation` VALUES ('2', '2', '1','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
-INSERT INTO `relation` VALUES ('3', '1', '2','1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `relation` VALUES ('1', '2', '3', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `relation` VALUES ('2', '2', '1', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `relation` VALUES ('3', '1', '2', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+
 -- ----------------------------
 -- Table structure for `user`
 -- ----------------------------
@@ -157,7 +165,7 @@ CREATE TABLE `video` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `fk_video_user` (`author_id`) USING BTREE,
   CONSTRAINT `fk_video_user` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of video
@@ -168,3 +176,4 @@ INSERT INTO `video` VALUES ('3', '2', 'TestVideo3', '/src/assets/video/3.mp4', '
 INSERT INTO `video` VALUES ('4', '3', 'TestVideo4', '/src/assets/video/4.mp4', '/src/assets/img/thumb/4.png', 'recommend-video', '2023-12-12 20:44:47', '2023-12-12 20:44:47');
 INSERT INTO `video` VALUES ('21', '1', '风景', '/src/assets/video/15.mp4', '/src/assets/img/thumb/15.png', 'recommend-video', '2023-12-12 20:44:17', '2023-12-12 20:44:17');
 INSERT INTO `video` VALUES ('22', '1', '路', '/src/assets/video/14.mp4', '/src/assets/img/thumb/14.png', 'recommend-video', '2023-12-12 20:45:48', '2023-12-12 20:45:48');
+INSERT INTO `video` VALUES ('30', '2', '吃', '/src/assets/video/10.mp4', '/src/assets/img/thumb/10.png', 'recommend-video', '2023-12-13 00:20:57', '2023-12-13 00:20:57');
