@@ -32,7 +32,7 @@
         <div class="left">
           <Check v-model="isAgree" />
         </div>
-        <div class="right">
+        <div class="right" style="font-size: 12rem;">
           已阅读并同意
           <span
             class="link"
@@ -62,7 +62,7 @@
         {{ loading ? "登录中" : "登录" }}
       </dy-button>
 
-      <div class="options">
+      <div class="options" style="font-size: 12rem;">
         <span>
           忘记了？<span class="link" @click="isJump">找回密码</span>
         </span>
@@ -117,6 +117,7 @@ export default {
         );
         if (res.data.status_code == 0) {
           this.$store.state.phone = this.phone;
+          this.$store.state.user_id=res.data.user_id;
           this.$router.push("/home");
         } else {
           document.getElementsByClassName("tip")[0].removeAttribute("id");

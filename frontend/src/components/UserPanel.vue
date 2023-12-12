@@ -7,7 +7,7 @@
         <img class="back" src="@/assets/img/icon/next.svg" alt="">
         <transition name="fade">
           <div class="float-user" v-if="state.floatFixed">
-            <img v-lazy="Utils.$imgPreview(props.currentItem.user.avatar_thumb.url_list[0])" class="avatar"/>
+            <img v-lazy="Utils.$imgPreview(props.currentItem.avatar)" class="avatar"/>
             <img v-if="!props.currentItem.user.follow_status" src="@/assets/img/icon/add-light.png" alt="" class="add">
             <span @click="followButton">{{ props.currentItem.user.follow_status ? '私信' : '关注' }}</span>
           </div>
@@ -39,10 +39,10 @@
             alt=""
             class="cover">
         <div class="avatar-wrapper">
-          <img v-lazy="Utils.$imgPreview(props.currentItem.user.avatar_thumb.url_list[0])" class="avatar"
+          <img v-lazy="Utils.$imgPreview(props.currentItem.avatar)" class="avatar"
                @click="state.previewImg = props.currentItem.user.avatar_thumb.url_list[0]">
           <div class="description">
-            <div class="name f22 mb1r">{{ props.currentItem.user.nickname }}</div>
+            <div class="name f22 mb1r">{{ props.currentItem.nickname }}</div>
             <div class="certification" v-if="props.currentItem.user.certification ">
               <img src="@/assets/img/icon/me/certification.webp">
               {{ props.currentItem.user.certification }}
@@ -57,43 +57,21 @@
       <div class="info">
         <div class="heat">
           <div class="text">
-            <span class="num">{{ Utils.formatNumber(props.currentItem.user.total_favorited) }}</span>
+            <span class="num">{{ props.currentItem.total_favorited}}</span>
             <span>获赞</span>
           </div>
           <div class="text">
-            <span class="num">{{ Utils.formatNumber(props.currentItem.user.following_count) }}</span>
+            <span class="num">{{ props.currentItem.follow_count }}</span>
             <span>关注</span>
           </div>
           <div class="text">
-            <span class="num">{{ Utils.formatNumber(props.currentItem.user.mplatform_followers_count) }}</span>
+            <span class="num">{{ props.currentItem.follower_count }}</span>
             <span>粉丝</span>
           </div>
         </div>
 
         <div class="signature f12" v-if="props.currentItem.user.signature">
           <div class="text" v-html="props.currentItem.user.signature"></div>
-        </div>
-        <div class="more">
-          <div class="age item" v-if="props.currentItem.user.user_age !== -1">
-            <img v-if="props.currentItem.user.gender" src="@/assets/img/icon/me/man.png" alt="">
-            <img v-else src="@/assets/img/icon/me/woman.png" alt="">
-            <span>{{ props.currentItem.user.user_age }}岁</span>
-          </div>
-          <div class="item" v-if="props.currentItem.user.ip_location">
-            {{ props.currentItem.user.ip_location }}
-          </div>
-          <template v-else>
-            <div class="item" v-if="props.currentItem.user.province || props.currentItem.user.city">
-              {{ props.currentItem.user.province }}
-              <template v-if="props.currentItem.user.province &&  props.currentItem.user.city">
-                ·
-              </template>
-              {{ props.currentItem.user.city }}
-            </div>
-          </template>
-          <div class="item" v-if="props.currentItem.user.school?.name">
-            {{ props.currentItem.user.school?.name }}
-          </div>
         </div>
       </div>
       <template v-if="props.currentItem.isRequest">
@@ -111,8 +89,8 @@
 
         <div class="my-buttons">
           <div class="follow-display">
-            <div class="follow-wrapper" :class="props.currentItem.user.follow_status ? 'follow-wrapper-followed' : ''">
-              <div class="no-follow" @click="props.currentItem.user.follow_status = 1">
+            <div class="follow-wrapper" :class="props.currentItem.author.is_follow ? 'follow-wrapper-followed' : ''">
+              <div class="no-follow" @click="props.currentItem.author.is_follow = true">
                 <img src="@/assets/img/icon/add-white.png" alt="">
                 <span>关注</span>
               </div>
@@ -162,11 +140,11 @@
         </div>
 
         <div class="total" ref="total">
-          作品 {{ props.currentItem.user.aweme_count }}
+          作品 {{ props.currentItem.video_list.length }}
           <img class="arrow" src="@/assets/img/icon/arrow-up-white.png" alt="">
         </div>
         <div class="videos">
-          <Posters v-if="props.currentItem.post.length" :list="props.currentItem.post"></Posters>
+          <Posters v-if="props.currentItem.video_list.length" :list="props.currentItem.video_list"></Posters>
         </div>
       </template>
     </div>
@@ -183,6 +161,7 @@ import Posters from '@/components/Posters'
 import api from "@/api";
 import {merge} from 'lodash'
 import {DefaultUser} from "@/utils/const_var";
+import Indicator from "./slide/Indicator.vue";
 
 const $nav = useNav()
 const store = useStore()
@@ -283,19 +262,20 @@ const state = reactive({
 watch(() => props.active,
     async (newVal) => {
       if (newVal && !props.currentItem.isRequest) {
-        let res = await api.user.profile()
-        console.log('res', res)
-        if (res.code === 200) {
-          res.data.post = res.data.post.map(v => {
-            return {
-              cover: v.video.cover.url_list[0],
-              digg_count: v.statistics.digg_count,
-              create_time: v.create_time
-            }
-          })
-          //去年保存的老数据有id。现在去网页版复制数据没id了。。。
-          res.data.user.unique_id = props.currentItem.user.unique_id
-          emit('update:currentItem', merge(props.currentItem, {...res.data, isRequest: true}))
+        let res = await api.user.profile({user_id:props.currentItem.AuthorId})
+        let post = await api.videos.mypost(({user_id:props.currentItem.AuthorId}))
+        if (res.status === 200) {
+          // res.data.post = res.data.post.map(v => {
+          //   return {
+          //     cover: v.video.cover.url_list[0],
+          //     digg_count: v.statistics.digg_count,
+          //     create_time: v.create_time
+          //   }
+          // })
+          // //去年保存的老数据有id。现在去网页版复制数据没id了。。。
+          // res.data.user.unique_id = props.currentItem.user.unique_id
+          emit('update:currentItem', merge(props.currentItem, {...res.data.user,...post.data, isRequest: true}))
+          // console.log(props.currentItem)
         }
       }
     })
@@ -303,6 +283,7 @@ watch(() => props.active,
 onMounted(() => {
   state.videos.my.list = resource.my
   state.videos.my.total = resource.my.length
+
   // state.videos.my.list = resource.videos
   // state.videos.my.total = resource.videos.length
 })

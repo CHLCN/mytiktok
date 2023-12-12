@@ -79,6 +79,7 @@ export default {
           return {}
         }
       },
+      user_id: this.$store.state.user_id
     }
   },
   // computed: {
@@ -117,7 +118,7 @@ export default {
       this.isSearch = true
     },
     async getUserInfo() {
-      let res = await this.$api.videos.my({user_id: 2})
+      let res = await this.$api.videos.my({user_id: this.user_id})
       // console.log(res)
       if (res.status === this.SUCCESS) this.userinfo = res.data.user
     },
@@ -125,12 +126,12 @@ export default {
       let res
       switch (newVal) {
         case 0:
-          res = await this.$api.user.follow({user_id: 2})
+          res = await this.$api.user.follow({user_id: this.user_id})
           // console.log(res)
           if (res.status === this.SUCCESS) this.friends.follow = res.data.user_list
           break
         case 1:
-          res = await this.$api.user.follower({user_id: 2})
+          res = await this.$api.user.follower({user_id: this.user_id})
           // console.log(res)
           if (res.status === this.SUCCESS) this.friends.follower = res.data.user_list
           break

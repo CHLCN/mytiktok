@@ -23,7 +23,7 @@
         <div class="left">
           <Check v-model="isAgree"/>
         </div>
-        <div class="right">
+        <div class="right" style="font-size: 12rem;">
           我已阅读并同意
           <span class="link" @click="$nav('/service-protocol',{type:'“抖音”用户服务协议'})">用户协议</span>
           和
@@ -163,6 +163,10 @@ export default {
         padding-top: 1rem;
         margin-right: 5rem;
       }
+
+      //.right {
+      //  font-size: 5px;
+      //}
     }
 
 

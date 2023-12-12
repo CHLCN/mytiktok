@@ -3,6 +3,7 @@ import BaseMusic from "../BaseMusic";
 import Utils from "../../utils";
 import {reactive,} from "vue";
 import bus, {EVENT_KEY} from "@/utils/bus";
+import People from "../../pages/people/components/People.vue";
 
 const props = defineProps({
   item: {
@@ -65,8 +66,8 @@ function showComments() {
     </div>
     <div class="love mb2r" @click.stop="loved($event)">
       <div>
-        <img src="../../assets/img/icon/love.svg" class="love-image" v-if="!props.item.isLoved">
-        <img src="../../assets/img/icon/loved.svg" class="love-image" v-if="props.item.isLoved">
+        <img src="../../assets/img/icon/love.svg" class="love-image" v-if="!props.item.is_favorite">
+        <img src="../../assets/img/icon/loved.svg" class="love-image" v-if="props.item.is_favorite">
       </div>
       <span>{{ Utils.formatNumber(props.item.digg_count) }}</span>
     </div>

@@ -35,7 +35,7 @@
                 <div class="heat">
                   <div class="text" @click="isShowStarCount = true">
                     <span>获赞</span>
-                    <span class="num">{{ formatNumber(userinfo.total_favorited) }}</span>
+                    <span class="num">{{ userinfo.total_favorited }}</span>
                   </div>
                   <div class="text" @click="$nav('/people/follow-and-fans',{type:0})">
                     <span>关注</span>
@@ -114,10 +114,10 @@
             <SlideItem class="SlideItem"
                        @scroll="scroll"
                        :style="SlideItemStyle">
-              <div class="notice">
-                <img src="../../assets/img/icon/me/lock-gray.png" alt="">
-                <span>只有你能看到自己的喜欢列表</span>
-              </div>
+<!--              <div class="notice">-->
+<!--                <img src="../../assets/img/icon/me/lock-gray.png" alt="">-->
+<!--                <span>只有你能看到自己的喜欢列表</span>-->
+<!--              </div>-->
               <Posters v-if="videos.like.length !== -1" :list="videos.like.list"></Posters>
               <Loading v-if="loadings.loading2" :is-full-screen="false"></Loading>
               <no-more v-else/>
@@ -243,7 +243,7 @@
 
     <ConfirmDialog
         v-model:visible="isShowStarCount"
-        :subtitle='`"${userinfo.nickname}"共获得${this.formatNumber(userinfo.total_favorited)}个赞`'
+        :subtitle='`"${userinfo.nickname}"共获得${userinfo.total_favorited}个赞`'
         okText="确认"
         cancelText="取消"
         @ok="isShowStarCount = false"
@@ -335,7 +335,8 @@ export default {
       acceleration: 1.2,
       sprint: 15,
       canScroll: true,
-      videoPoster: `?vframe/jpg/offset/0/w/${document.body.clientWidth}`
+      videoPoster: `?vframe/jpg/offset/0/w/${document.body.clientWidth}`,
+      user_id: this.$store.state.user_id
     }
   },
   computed: {
@@ -392,7 +393,7 @@ export default {
     },
 
     async getUserInfo(){
-      let res =await this.$api.videos.my({user_id:2})
+      let res =await this.$api.videos.my({user_id:this.user_id})
       console.log(res)
       if (res.status === this.SUCCESS) this.userinfo = res.data.user
     },
@@ -435,13 +436,11 @@ export default {
           let res
           switch (newVal) {
             case 0:
-              res = await this.$api.videos.mypost({user_id:2})
-              // console.log(res)
+              res = await this.$api.videos.mypost({user_id:this.user_id})
               if (res.status === this.SUCCESS) this.videos.my.list = res.data.video_list
               break
             case 1:
-              res = await this.$api.videos.like({user_id:2})
-              // console.log(res)
+              res = await this.$api.videos.like({user_id:this.user_id})
               if (res.status === this.SUCCESS) this.videos.like.list = res.data.video_list
               break
           }

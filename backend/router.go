@@ -18,6 +18,7 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/video/recommended", jwt.AuthWithoutLogin(), controller.Feed)
 	//apiRouter.GET("/feed/", jwt.AuthWithoutLogin(), controller.Feed)
 	apiRouter.GET("/me/my", jwt.AuthWithoutLogin(), controller.UserInfo)
+	apiRouter.GET("/user/profile/other", jwt.AuthWithoutLogin(), controller.UserInfo)
 	apiRouter.GET("/user/number_existence", controller.UserExistence)
 	apiRouter.POST("/user/getcode", controller.GenerateCode)
 	apiRouter.POST("/user/password_change", controller.PasswordChange)

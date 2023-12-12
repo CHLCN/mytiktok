@@ -67,6 +67,7 @@ func Login(c *gin.Context) {
 	if username == user.Name {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0, StatusMsg: vcode},
+			UserId:   user.Id,
 		})
 	} else {
 		newUser := dao.UserBasicInfo{
@@ -78,9 +79,7 @@ func Login(c *gin.Context) {
 		})
 		if usi.InsertUser(&newUser) != true {
 			fmt.Println("Insert Fail")
-			c.JSON(http.StatusOK, UserLoginResponse{
-				Response: Response{StatusCode: 1, StatusMsg: "Register Fail"},
-			})
+			c.JSON(http.StatusOK, UserLoginResponse{})
 		}
 	}
 

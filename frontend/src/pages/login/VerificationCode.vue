@@ -69,8 +69,7 @@ export default {
                     username:this.$store.state.phone,
                 }
             }
-        ) 
-        
+        )
     },
     login() {
       this.loading = true
