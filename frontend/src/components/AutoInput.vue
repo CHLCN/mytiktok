@@ -1,36 +1,24 @@
 <template>
-  <div
-    ref="input"
-    :placeholder="placeholder"
-    class="auto-input"
-    contenteditable
-    @input="changeText"
-  >
-    {{ modelValue }}
-  </div>
+  <input @click="typing = true"
+         @blur="typing = false"
+         v-model="message"
+         type="text"
+         placeholder="留下你的精彩评论吧"
+         class="input">
 </template>
 
 <script>
 export default {
   name: "AutoInput",
-  props: {
-    modelValue: String,
-    placeholder: {
-      type: String,
-      default: "留下你的精彩评论吧",
-    },
-  },
   mounted() {
-    // this.$refs.input.setAttribute("placeholder", "改变")
   },
   computed: {},
-  data: function () {
-    return {};
+  data() {
+    return {
+      message: "",
+    };
   },
   methods: {
-    changeText(e) {
-      this.$emit("update:modelValue", this.$el.innerText);
-    },
   },
 };
 </script>
@@ -53,6 +41,13 @@ export default {
   /*content: "留下你的精彩评论吧";*/
   content: attr(placeholder);
   color: #999999;
+}
+
+.input {
+  flex: 1;
+  outline: none;
+  border: none;
+  background: #ececec;
 }
 
 .auto-input:focus::before {

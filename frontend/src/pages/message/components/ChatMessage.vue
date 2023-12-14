@@ -3,14 +3,18 @@
        :class="!isMe ? 'left' : 'right'"
        :style="message.type ===  MESSAGE_TYPE.TIME && 'margin-bottom: 0;'">
     <div class="time" v-if="message.type ===  MESSAGE_TYPE.TIME">
-      {{ message.time }}
+      {{ message.content }}
     </div>
     <template v-else>
       <img v-if="!isMe" src="../../../assets/img/icon/avatar/3.png" alt="" class="avatar">
+<!--      <img v-if="!isMe" :src="$imgPreview(touserinfo.avatar)" alt="" class="avatar">-->
       <div class="chat-wrapper" @click="$emit('itemClick',message)">
-        <div class="chat-text"
-             v-if="message.type ===  MESSAGE_TYPE.TEXT">
-          {{ message.data }}
+        <!--        <div class="chat-text"-->
+        <!--             v-if="message.type ===  MESSAGE_TYPE.TEXT">-->
+        <!--          {{ message.data }}-->
+        <!--        </div>-->
+        <div class="chat-text">
+          {{ message.content }}
         </div>
 
         <div class="douyin_video"
@@ -90,13 +94,15 @@
           <img v-for="user in message.loved" src="../../../assets/img/icon/head-image.jpeg" alt="" class="love-avatar">
         </div>
       </div>
-      <img v-if="isMe" src="../../../assets/img/icon/avatar/2.png" alt="" class="avatar">
+      <img v-if="isMe" :src="$imgPreview(userinfo.avatar)" alt="" class="avatar">
     </template>
   </div>
 </template>
 <script>
 
 import {mapState} from "vuex";
+import message from "../Message.vue";
+import request from "../../../utils/request";
 
 let CALL_STATE = {
   REJECT: 0,
@@ -140,26 +146,69 @@ export default {
       default() {
         return {}
       }
-    }
+    },
+    userinfo: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    touserinfo: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
   },
   data() {
     return {
       MESSAGE_TYPE,
       CALL_STATE,
-      RED_PACKET_MODE
+      RED_PACKET_MODE,
+      // userinfo:{},
+      // touserinfo:{},
     }
   },
   computed: {
-    ...mapState({
-      userinfo: 'userinfo',
-    }),
+    // ...mapState({
+    //   userinfo: 'userinfo',
+    // }),
     isMe() {
-      return this.userinfo.id === this.message.user.id
+      // console.log(message)
+      return this.$store.state.user_id === this.message.from_user_id
     }
   },
   created() {
+    // this.getData()
   },
-  methods: {}
+  mounted() {
+  },
+  methods: {
+    async getData() {
+      let res = await request.get(
+          "/me/my",
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+            },
+          },
+          {}
+      );
+      this.userinfo=res.data.user
+      console.log(this.userinfo)
+      let tores = await request.get(
+          "/user/profile/other",
+          {
+            params: {
+              user_id: this.to_user_id,
+            },
+          },
+          {}
+      );
+      this.touserinfo=tores.data.user
+      console.log(this.touserinfo)
+    },
+  }
 }
 </script>
 

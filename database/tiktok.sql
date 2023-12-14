@@ -100,7 +100,10 @@ CREATE TABLE `message` (
 -- ----------------------------
 -- Records of message
 -- ----------------------------
-
+INSERT INTO `message` VALUES ('1', '1', '2', '年末你看了吗？','1', '2023-12-13 00:19:58', '2023-12-13 00:19:58');
+INSERT INTO `message` VALUES ('2', '2', '1', 'no？','1', '2023-12-13 00:19:58', '2023-12-13 00:19:58');
+INSERT INTO `message` VALUES ('3', '1', '2', '速度去看！','1', '2023-12-13 00:19:58', '2023-12-13 00:19:58');
+INSERT INTO `message` VALUES ('4', '3', '2', '什么时候更新？','1', '2023-12-13 00:19:58', '2023-12-13 00:19:58');
 -- ----------------------------
 -- Table structure for `relation`
 -- ----------------------------
@@ -125,7 +128,9 @@ CREATE TABLE `relation` (
 INSERT INTO `relation` VALUES ('1', '2', '3', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
 INSERT INTO `relation` VALUES ('2', '2', '1', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
 INSERT INTO `relation` VALUES ('3', '1', '2', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
-
+INSERT INTO `relation` VALUES ('4', '3', '2', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `relation` VALUES ('5', '2', '4', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `relation` VALUES ('6', '5', '2', '1', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
 -- ----------------------------
 -- Table structure for `user`
 -- ----------------------------
@@ -148,6 +153,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` VALUES ('1', '13731992346', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441', 'TWICE', '/src/assets/img/icon/avatar/1.png', '2023-12-06 23:50:37', '2023-12-06 23:50:37');
 INSERT INTO `user` VALUES ('2', '15858228936', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441', 'XG', '/src/assets/img/icon/avatar/2.png', '2023-12-05 23:50:37', '2023-12-05 23:50:37');
 INSERT INTO `user` VALUES ('3', '13800138000', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441', 'ITZY', '/src/assets/img/icon/avatar/3.png', '2023-11-09 21:52:26', '2023-11-09 21:52:26');
+INSERT INTO `user` VALUES ('4', '13800138001', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441', 'IVE', '/src/assets/img/icon/avatar/4.png', '2023-11-10 21:52:26', '2023-11-10 21:52:26');
+INSERT INTO `user` VALUES ('5', '13800138002', 'b946ccc987465afcda7e45b1715219711a13518d1f1663b8c53b848cb0143441', 'AESPA', '/src/assets/img/icon/avatar/5.png', '2023-11-11 21:52:26', '2023-11-11 21:52:26');
 
 -- ----------------------------
 -- Table structure for `video`
@@ -176,4 +183,4 @@ INSERT INTO `video` VALUES ('3', '2', 'TestVideo3', '/src/assets/video/3.mp4', '
 INSERT INTO `video` VALUES ('4', '3', 'TestVideo4', '/src/assets/video/4.mp4', '/src/assets/img/thumb/4.png', 'recommend-video', '2023-12-12 20:44:47', '2023-12-12 20:44:47');
 INSERT INTO `video` VALUES ('21', '1', '风景', '/src/assets/video/15.mp4', '/src/assets/img/thumb/15.png', 'recommend-video', '2023-12-12 20:44:17', '2023-12-12 20:44:17');
 INSERT INTO `video` VALUES ('22', '1', '路', '/src/assets/video/14.mp4', '/src/assets/img/thumb/14.png', 'recommend-video', '2023-12-12 20:45:48', '2023-12-12 20:45:48');
-INSERT INTO `video` VALUES ('30', '2', '吃', '/src/assets/video/10.mp4', '/src/assets/img/thumb/10.png', 'recommend-video', '2023-12-13 00:20:57', '2023-12-13 00:20:57');
+INSERT INTO `video` VALUES ('30', '4', '吃', '/src/assets/video/10.mp4', '/src/assets/img/thumb/10.png', 'recommend-video', '2023-12-13 00:20:57', '2023-12-13 00:20:57');

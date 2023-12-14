@@ -14,14 +14,14 @@
         <Search class="ml2r mr2r mb2r" @click="searching = true"></Search>
         <div class="friends  pl1r ">
           <div class="friend pr1r pl1r"
-               @click="$nav('/message/chat')"
+
                v-for="(item,index) in friends.all">
-            <div class="avatar" :class="index%2===0?'on-line':''">
+            <div class="avatar" :class="index%2===0?'on-line':''"  @click="$nav('/message/chat',{to_user_id: item.id})">
               <img :src="$imgPreview(item.avatar)" alt="">
             </div>
-            <span>{{ item.name }}</span>
+            <span>{{ item.nickname }}</span>
           </div>
-          <div class="friend pr10p">
+          <div class="friend pr10p" @click="$no">
             <img src="../../assets/img/icon/message/setting.png" alt="">
             <span class="ml1r">状态设置</span>
           </div>
@@ -29,7 +29,8 @@
         <div class="line mt2r"></div>
         <div class="messages ">
           <!--      粉丝-->
-          <div class="message" @click="$nav('/message/fans')">
+          <div class="message" @click="$no">
+<!--          <div class="message" @click="$nav('/message/fans')">-->
             <div class="avatar">
               <img src="../../assets/img/icon/msg-icon1.png" alt="" class="head-image">
             </div>
@@ -48,7 +49,8 @@
             </div>
           </div>
           <!--      互动消息-->
-          <div class="message" @click="$nav('/message/all')">
+          <div class="message" @click="$no">
+<!--            <div class="message" @click="$nav('/message/all')">-->
             <div class="avatar">
               <img src="../../assets/img/icon/msg-icon2.png" alt="" class="head-image">
             </div>
@@ -66,190 +68,33 @@
               </div>
             </div>
           </div>
-          <!--      抖音小助手-->
-          <div class="message" @click="$nav('/message/douyin-helper')">
-            <div class="avatar">
-              <img src="../../assets/img/icon/msg-icon5.webp" alt="" class="head-image">
-            </div>
-            <div class="content">
-              <div class="left">
-                <div class="name">
-                  <span>抖音小助手</span>
-                  <span class="tag">官方</span>
-                </div>
-                <div class="detail">
-                  #今天谁请客呢
-                  <div class="point"></div>
-                  星期四
-                </div>
-              </div>
-              <div class="right">
-                <div class="not-read"></div>
-              </div>
-            </div>
-          </div>
-          <!--      系统通知-->
-          <div class="message" @click="$nav('/message/system-notice')">
-            <div class="avatar">
-              <img src="../../assets/img/icon/msg-icon4.png" alt="" class="head-image">
-            </div>
-            <div class="content">
-              <div class="left">
-                <div class="name">
-                  <span>系统通知</span>
-                  <span class="tag">官方</span>
-                </div>
-                <div class="detail">
-                  协议修订通知
-                  <div class="point"></div>
-                  08-31
-                </div>
-              </div>
-              <div class="right">
-                <div class="not-read"></div>
-              </div>
-            </div>
-          </div>
-          <!--      求更新-->
-          <div class="message" @click="$nav('/me/request-update')">
-            <div class="avatar">
-              <img src="../../assets/img/icon/msg-icon7.webp" alt="" class="head-image">
-            </div>
-            <div class="content">
-              <div class="left">
-                <div class="name">
-                  <span>求更新</span>
-                  <span class="tag">官方</span>
-                </div>
-                <div class="detail">
-                  你收到过1次求更新
-                  <div class="point"></div>
-                  10-09
-                </div>
-              </div>
-              <div class="right">
-                <div class="not-read"></div>
-              </div>
-            </div>
-          </div>
-          <!--      任务通知-->
-          <div class="message" @click="$nav('/message/task-notice')">
-            <div class="avatar">
-              <img src="../../assets/img/icon/msg-icon6.webp" alt="" class="head-image">
-            </div>
-            <div class="content">
-              <div class="left">
-                <div class="name">
-                  <span>任务通知</span>
-                  <span class="tag">官方</span>
-                </div>
-                <div class="detail">
-                  发作品得流量
-                  <div class="point"></div>
-                  05-26
-                </div>
-              </div>
-              <div class="right">
-                <div class="not-read"></div>
-              </div>
-            </div>
-          </div>
-          <!--      直播通知-->
-          <div class="message" @click="$nav('/message/live-notice')">
-            <div class="avatar">
-              <img src="../../assets/img/icon/msg-icon8.webp" alt="" class="head-image">
-            </div>
-            <div class="content">
-              <div class="left">
-                <div class="name">
-                  <span>直播通知</span>
-                  <span class="tag">官方</span>
-                </div>
-                <div class="detail">
-                  举报结果通知
-                  <div class="point"></div>
-                  05-26
-                </div>
-              </div>
-              <div class="right">
-                <div class="not-read"></div>
-              </div>
-            </div>
-          </div>
-          <!--      钱包通知-->
-          <div class="message" @click="$nav('/message/money-notice')">
-            <div class="avatar">
-              <img src="../../assets/img/icon/msg-icon9.webp" alt="" class="head-image">
-            </div>
-            <div class="content">
-              <div class="left">
-                <div class="name">
-                  <span>钱包通知</span>
-                  <span class="tag">官方</span>
-                </div>
-                <div class="detail">
-                  卡券发放提醒
-                  <div class="point"></div>
-                  05-26
-                </div>
-              </div>
-              <div class="right">
-                <div class="not-read"></div>
-              </div>
-            </div>
-          </div>
 
           <!--      消息-->
-          <div class="message" @click="$nav('/message/chat')">
+          <div class="message" @click="$nav('/message/chat')" v-for="item in friends.all">
             <div class="avatar on-line">
-              <img src="../../assets/img/icon/avatar/2.png" alt="" class="head-image">
+              <img  :src="$imgPreview(item.avatar)" alt="" class="head-image">
             </div>
             <div class="content">
               <div class="left">
                 <div class="name">
-                  <span>{{ userinfo.nickname }}</span>
+                  <span>{{ item.nickname }}</span>
                 </div>
                 <div class="detail">
-                  哈哈哈哈哈哈
-                  <div class="point"></div>
-                  10-10
+                  {{ item.message[item.message.length-1].content }}
+<!--                  <div class="point"></div>-->
+<!--                  10-10-->
                 </div>
               </div>
               <div class="right">
                 <!--                          <div class="not-read"></div>-->
                 <!--                          <img class="camera" src="../../assets/img/icon/close-white.png" alt="">-->
                 <!--            <img class="arrow" src="../../assets/img/icon/close-white.png" alt="">-->
-                <div class="badge">12</div>
+<!--                <div class="badge">12</div>-->
               </div>
             </div>
           </div>
 
           <NoMore/>
-
-          <!--      模板-->
-          <!--      <div class="message">-->
-          <!--        <div class="avatar on-line">-->
-          <!--          <img src="../../assets/img/icon/avatar/2.png" alt="" class="head-image">-->
-          <!--        </div>-->
-          <!--        <div class="content">-->
-          <!--          <div class="left">-->
-          <!--            <div class="name">-->
-          <!--              <span>粉丝</span>-->
-          <!--              <span class="tag">官方</span>-->
-          <!--            </div>-->
-          <!--            <div class="detail">-->
-          <!--              <img class="sent" src="../../assets/img/icon/close-white.png" alt="">-->
-          <!--              已送达 ，sb，凌晨 01:15-->
-          <!--            </div>-->
-          <!--          </div>-->
-          <!--          <div class="right">-->
-          <!--            &lt;!&ndash;                          <div class="not-read"></div>&ndash;&gt;-->
-          <!--            &lt;!&ndash;                          <img class="camera" src="../../assets/img/icon/close-white.png" alt="">&ndash;&gt;-->
-          <!--            &lt;!&ndash;            <img class="arrow" src="../../assets/img/icon/close-white.png" alt="">&ndash;&gt;-->
-          <!--            <div class="badge">12</div>-->
-          <!--          </div>-->
-          <!--        </div>-->
-          <!--      </div>-->
         </div>
       </Scroll>
       <from-bottom-dialog page-id="Message" v-model="createChatDialog">
@@ -295,7 +140,7 @@
               <div class="friend-item" v-for="item in friends.all" @click="item.select = !item.select">
                 <img class="left" :src="$imgPreview(item.avatar)" alt="">
                 <div class="right">
-                  <span>{{ item.name }}</span>
+                  <span>{{ item.nickname }}</span>
                   <Check mode="red" style="height: 20rem;width: 20rem;" v-model="item.select"/>
                 </div>
               </div>
@@ -413,6 +258,7 @@ import Mask from "../../components/Mask";
 import Scroll from "../../components/Scroll";
 import People from "../people/components/People";
 import BasePage from "../BasePage";
+import request from "../../utils/request";
 
 export default {
   extends: BasePage,
@@ -440,6 +286,11 @@ export default {
       text: 'AAAAAAAAA、BBBBBBBBBBBBB、CCCCCCCC',
       searchFriends: [],
       recommend: [],
+      friends: {
+        all:[]
+      },
+      userinfo:[],
+      message:[],
 
       moreChat: []
     }
@@ -480,8 +331,51 @@ export default {
     setTimeout(() => {
       // this.isShowRecommend = true
     }, 1000)
+    this.getData()
   },
   methods: {
+    async getData(){
+      let friendres = await request.get(
+          "/relation/friend/list/",
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+            },
+          },
+          {}
+      );
+      // console.log(friendres)
+      this.friends.all = friendres.data.user_list
+      // let userinfores = await request.get(
+      //     "/me/my",
+      //     {
+      //       params: {
+      //         user_id: this.$store.state.user_id,
+      //       },
+      //     },
+      //     {}
+      // );
+      // // console.log(userinfores)
+      // this.userinfo = userinfores.data.user
+      let i
+      for(i of friendres.data.user_list){
+        let messageres = await request.get(
+            "/message/chat/",
+            {
+              params: {
+                user_id: this.$store.state.user_id,
+                to_user_id: i.id,
+              },
+            },
+            {}
+        );
+        this.friends.all[friendres.data.user_list.indexOf(i)].message = messageres.data.message_list
+        // this.message
+        console.log(this.friends.all)
+      }
+
+      // this.userinfo = userinfores.data.user
+    },
     async loadRecommendData() {
       if (this.loading) return
       this.loading = true

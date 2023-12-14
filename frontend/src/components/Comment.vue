@@ -13,7 +13,7 @@
     <template v-slot:header>
       <div class="title">
         <dy-back mode="dark" img="close" direction="right" style="opacity: 0" />
-        <span>{{ comments.length }}条评论</span>
+        <span v-if="comments">{{ comments.length }}条评论</span>
         <dy-back
           mode="dark"
           img="close"
@@ -23,10 +23,9 @@
       </div>
     </template>
     <div class="comment">
-      <div class="wrapper" v-if="comments.length">
+      <div class="wrapper" >
         <div class="items">
           <div class="item" v-for="item in comments">
-            <!--             v-longpress="e => showOptions(item)"-->
             <div class="main">
               <div class="content">
                 <img :src="item.user.avatar" alt="" class="head-image" />
@@ -64,8 +63,6 @@
         <no-more />
       </div>
 
-      <Loading v-else style="position: absolute" />
-
       <transition name="fade">
         <Mask v-if="isCall" mode="lightgray" @click="isCall = false" />
       </transition>
@@ -74,7 +71,7 @@
           <div class="call-friend" v-if="isCall">
             <div
               class="friend"
-              v-for="item in friends.all"
+              v-for="item in friends.user_list"
               @click="toggleCall(item)"
             >
               <img
@@ -83,7 +80,7 @@
                 :src="$imgPreview(item.avatar)"
                 alt=""
               />
-              <span>{{ item.name }}</span>
+              <span>{{ item.nickname }}</span>
               <img
                 v-if="item.select"
                 class="checked"
@@ -157,7 +154,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["friends"]),
+    // ...mapState(["friends"]),
   },
   watch: {
     modelValue(newVale) {
@@ -170,6 +167,7 @@ export default {
   },
   data() {
     return {
+      friends:{},
       comment: "",
       test: "",
       comments: [],
@@ -184,7 +182,6 @@ export default {
       isInput: false,
       isCall: false,
       videoId: 0,
-      user: { avatar: "../src/assets/img/icon/avatar/2.png", nickname: "XG" },
     };
   },
   mounted() {
@@ -194,27 +191,36 @@ export default {
   methods: {
     getID(itemId) {
       this.videoId = itemId;
-      // console.log('Received OPEN_COMMENTS event with itemId:', itemId);
-      // 在这里可以访问到 props.item.id 的值，即 itemId
     },
-    send() {
-      this.comments.push({
-        id: "2",
-        user: this.user,
-        // avatar: "../assets/img/icon/avatar/2.png",
-        // nickname: "XG",
-        // comment: "@何以为家",
-        content: this.comment,
-        loveNum: 0,
-        isLoved: false,
-        time: "2023-12-12 20:33",
-        children: [],
-      });
-      this.comment = "";
-      this.isCall = false;
+    async send() {
+      let res = await request.post(
+          "/comment/action/",
+          {
+          },
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+              video_id: this.videoId,
+              action_type:1,
+              comment_text:this.comment,
+            }
+          }
+      );
+      console.log(res);
+      let updateres = await request.get(
+          "/comment/list/",
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+              video_id: this.videoId,
+            },
+          },
+          {}
+      );
+      this.comments = updateres.data.comment_list;
     },
     async getData() {
-      await this.$sleep(500);
+      // await this.$sleep(500);
       let res = await request.get(
         "/comment/list/",
         {
@@ -225,105 +231,31 @@ export default {
         },
         {}
       );
-      console.log(this.videoId);
-      console.log(res);
       this.comments = res.data.comment_list;
-      // this.comments = [
-      //   {
-      //     id: '1',
-      //     avatar: new URL('../assets/img/icon/avatar/1.png', import.meta.url).href,
-      //     name: '彭雨晏',
-      //     text: '这到底是怎么了？艺人一个接一个的出事',
-      //     loveNum: 57000,
-      //     isLoved: false,
-      //     time: '2021-08-24 20:10',
-      //     children: [
-      //       {
-      //         id: '10',
-      //         avatar: new URL('../assets/img/icon/avatar/2.png', import.meta.url).href,
-      //         name: 'sugar少吃一点',
-      //         replay: '',
-      //         text: '要么之前吴京说了一句话对一个小女孩说，以后别来娱乐圈',
-      //         loveNum: 9174,
-      //         isLoved: false,
-      //         time: '2022-08-24 20:25',
-      //       },
-      //       {
-      //         id: '11',
-      //         avatar: new URL('../assets/img/icon/avatar/3.png', import.meta.url).href,
-      //         name: '我不吃晚饭了',
-      //         replay: 'sugar少吃一点',
-      //         text: '@nana max',
-      //         loveNum: 695,
-      //         isLoved: false,
-      //         time: '2023-01-24 20:29',
-      //       },
-      //       {
-      //         id: '12',
-      //         avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
-      //         name: '我劝你善良',
-      //         replay: 'sugar少吃一点',
-      //         text: '对对 我也刷到过这个视频',
-      //         loveNum: 1253,
-      //         isLoved: false,
-      //         time: '2023-02-23 20:59',
-      //       },
-      //     ]
-      //   },
-      //   {
-      //     id: '2',
-      //     avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
-      //     name: '成都旅行',
-      //     text: '开车回来4个小时，爬山两小时，如果当天天气好，你一定会喜欢上这里，是真的美！一日游',
-      //     loveNum: 27,
-      //     isLoved: false,
-      //     time: '2021-08-24 20:33',
-      //     children: [
-      //       {
-      //         id: '20',
-      //         avatar: new URL('../assets/img/icon/avatar/4.png', import.meta.url).href,
-      //         name: '成都旅行',
-      //         replay: '',
-      //         text: '甘海子，汶川转经楼村',
-      //         loveNum: 32,
-      //         isLoved: false,
-      //         time: '2021-08-24 20:34',
-      //       },
-      //       {
-      //         id: '21',
-      //         avatar: new URL('../assets/img/icon/avatar/5.png', import.meta.url).href,
-      //         name: 'August',
-      //         replay: '成都旅行',
-      //         text: '@NickyOO @AW%',
-      //         loveNum: 0,
-      //         isLoved: false,
-      //         time: '2021-08-25 03:29',
-      //       },
-      //       {
-      //         id: '22',
-      //         avatar: new URL('../assets/img/icon/avatar/6.png', import.meta.url).href,
-      //         name: '用户121342411',
-      //         replay: '成都旅行',
-      //         text: '自己可以开私家车进去不',
-      //         loveNum: 1,
-      //         isLoved: false,
-      //         time: '2021-08-25 07:29',
-      //       },
-      //     ]
-      //   }
-      // ]
+      let friendres = await request.get(
+          "/relation/friend/list/",
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+            },
+          },
+          {}
+      );
+      console.log(friendres)
+      this.friends = friendres.data
     },
     cancel() {
       this.$emit("update:modelValue", false);
       this.$emit("close");
     },
-    toggleCall(item) {
+    async toggleCall(item) {
       item.select = !item.select;
-      let name = item.name;
-      if (this.comment.includes("@" + name)) {
-        this.comment = this.comment.replace(`@${name} `, "");
+      let nickname = item.nickname;
+      if (this.comment.includes("@" + nickname)) {
+        this.comment = this.comment.replace(`@${nickname} `, "");
+
       } else {
-        this.comment += `@${name} `;
+        this.comment += `@${nickname} `;
       }
     },
     loved(row) {

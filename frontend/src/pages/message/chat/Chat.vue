@@ -1,11 +1,9 @@
 <template>
-  <div class="Chat">
+  <div class="Chat" @update:modelValue="(e) => $emit('update:modelValue', e)">
     <div class="chat-content" @touchstart="tooltipTop = -1">
       <div class="header">
         <div class="left">
           <dy-back @click="$back"></dy-back>
-          <div class="badge">12</div>
-          <span>zzzz</span>
         </div>
         <div class="right">
           <img @click="mitt.emit('showAudioCall')"
@@ -16,15 +14,22 @@
         </div>
       </div>
       <div class="message-wrapper" ref="msgWrapper" :class="isExpand ? 'expand' : ''">
-        <ChatMessage @itemClick="clickItem" v-longpress="showTooltip" :message="item"
-                     v-for="(item,index) in messages" :key="item"></ChatMessage>
+        <ChatMessage @itemClick="clickItem" v-longpress="showTooltip" :message="item" :userinfo="userinfo" :tousrinfo="touserinfo"
+                     v-for="(item,index) in message" :key="item"></ChatMessage>
       </div>
       <div class="footer">
         <div class="toolbar" v-if="!recording">
           <img src="../../../assets/img/icon/message/camera.png" alt="" class="camera">
           <input @click="typing = true"
                  @blur="typing = false"
+                 v-model="newmessage"
+                 style="color: #dedede"
                  type="text" placeholder="发送信息...">
+          <img
+              v-if="newmessage"
+              src="../../../assets/img/icon/message/up.png"
+              @click="send"
+          />
           <img @click="recording = true;showOption = false" src="../../../assets/img/icon/message/voice-white.png"
                alt="">
           <img src="../../../assets/img/icon/message/emoji-white.png" alt="">
@@ -111,46 +116,6 @@
       <div class="footer"></div>
     </div>
 
-    <!--  红包  -->
-    <transition name="scale">
-      <div class="red-packet" v-if="isShowOpenRedPacket">
-        <Mask @click="isShowOpenRedPacket = false"/>
-        <div class="content">
-          <template v-if="isOpened">
-            <img src="../../../assets/img/icon/message/chat/bg-open.png" alt="" class="bg">
-            <div class="wrapper">
-              <div class="top">
-                <div class="money">0.01元</div>
-                <div class="belong">{{ userinfo.nickname }}的红包</div>
-                <div class="password">大吉大利</div>
-              </div>
-              <div class="notice" @click="$nav('/message/chat/red-packet-detail')">查看红包详情></div>
-            </div>
-          </template>
-          <template v-else>
-            <img src="../../../assets/img/icon/message/chat/bg-close.png" alt="" class="bg">
-            <div class="wrapper">
-              <div class="top">
-                <img :src="$imgPreview(userinfo.avatar)" alt="" class="avatar">
-                <div class="belong">{{ userinfo.nickname }}的红包</div>
-                <div class="password">大吉大利</div>
-              </div>
-
-              <div class="l-button" :class="{opening}" @click="openRedPacket">
-                <template v-if="opening">
-                  <img src="../../../assets/img/icon/loading-white.png" alt="">
-                  正在打开
-                </template>
-                <span v-else>开红包</span>
-              </div>
-            </div>
-          </template>
-          <img src="../../../assets/img/icon/message/chat/close.png" alt="" class="close"
-               @click="isShowOpenRedPacket = false">
-        </div>
-      </div>
-    </transition>
-
     <Loading v-if="loading"/>
   </div>
 </template>
@@ -160,6 +125,7 @@ import {inject, nextTick} from "vue";
 import Mask from "../../../components/Mask";
 import {mapState} from "vuex";
 import Loading from "../../../components/Loading";
+import request from "../../../utils/request";
 
 let CALL_STATE = {
   REJECT: 0,
@@ -202,244 +168,256 @@ export default {
     Mask,
     ChatMessage
   },
+  watch:{
+    modelValue(newVale) {
+      if (newVale) {
+        this.getData();
+      }
+    },
+  },
   data() {
     return {
       previewImg: new URL('../../../assets/img/poster/3.jpg', import.meta.url).href,
       videoCall: [],
       MESSAGE_TYPE,
-      messages: [
-        {
-          type: MESSAGE_TYPE.TIME,
-          data: '',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.RED_PACKET,
-          state: AUDIO_STATE.NORMAL,
-          mode: RED_PACKET_MODE.MULTIPLE,
-          data: {
-            money: 5.11,
-            title: '大吉大利',
-            state: '未领取'
-          },
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.RED_PACKET,
-          state: AUDIO_STATE.NORMAL,
-          mode: RED_PACKET_MODE.SINGLE,
-          data: {
-            money: 5.11,
-            title: '大吉大利',
-            state: '已过期'
-          },
-          time: '2021-01-02 21:21',
-          user: {
-            id: 1,
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.MEME,
-          state: AUDIO_STATE.NORMAL,
-          data: new URL('../../../assets/img/poster/1.jpg', import.meta.url).href,
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          },
-          loved: [
-            {
-              id: 2,
-              avatar: '../../assets/img/icon/head-image.jpg'
-            },
-            {
-              id: 2,
-              avatar: '../../assets/img/icon/head-image.jpg'
-            },
-          ]
-        },
-        {
-          type: MESSAGE_TYPE.IMAGE,
-          state: AUDIO_STATE.NORMAL,
-          data: new URL('../../../assets/img/poster/1.jpg', import.meta.url).href,
-          time: '2021-01-02 21:21',
-          user: {
-            id: 1,
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.IMAGE,
-          state: AUDIO_STATE.NORMAL,
-          data: new URL('../../../assets/img/poster/1.jpg', import.meta.url).href,
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          },
-          readState: READ_STATE.ARRIVED
-        },
-        {
-          type: MESSAGE_TYPE.VIDEO_CALL,
-          state: CALL_STATE.REJECT,
-          data: '2021-01-02 21:44',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.VIDEO_CALL,
-          state: CALL_STATE.RESOLVE,
-          data: '2021-01-02 21:44',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.VIDEO_CALL,
-          state: CALL_STATE.NONE,
-          data: '2021-01-02 21:44',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.AUDIO_CALL,
-          state: CALL_STATE.REJECT,
-          data: '2021-01-02 21:44',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.AUDIO_CALL,
-          state: CALL_STATE.RESOLVE,
-          data: '2021-01-02 21:44',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.AUDIO_CALL,
-          state: CALL_STATE.NONE,
-          data: '2021-01-02 21:44',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.AUDIO,
-          state: AUDIO_STATE.NORMAL,
-          data: {
-            duration: 5,
-            src: '',
-          },
-          time: '2021-01-02 21:21',
-          user: {
-            id: '1',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.AUDIO,
-          state: AUDIO_STATE.NORMAL,
-          data: {
-            duration: 10,
-            src: '',
-          },
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.TEXT,
-          data: '又在刷抖音',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.TEXT,
-          data: '我昨天@你那个视频发给我下',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.TEXT,
-          data: '我找不到了',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '1',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.TEXT,
-          data: '我也找不到了我也找不到了我也找不到了我也找不到了我也找不到了我也找不到了我也找不到了我也找不到了',
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.DOUYIN_VIDEO,
-          state: VIDEO_STATE.VALID,
-          data: {
-            poster: new URL('../../../assets/img/poster/3.jpg', import.meta.url).href,
-            author: {
-              name: 'safasdfassafasdfassafasdfassafasdfas',
-              avatar: new URL('../../../assets/img/icon/head-image.jpeg', import.meta.url).href
-            },
-            title: '服了asd'
-          },
-          time: '2021-01-02 21:21',
-          user: {
-            id: '1',
-            avatar: '../../../assets/img/icon/head-image.jpg'
-          }
-        },
-        {
-          type: MESSAGE_TYPE.VIDEO,
-          state: VIDEO_STATE.VALID,
-          data: {
-            poster: new URL('../../../assets/img/poster/3.jpg', import.meta.url).href,
-          },
-          time: '2021-01-02 21:21',
-          user: {
-            id: '93864497380',
-            avatar: '../../../assets/img/icon/head-image.jpg'
-          }
-        },
-      ],
+      to_user_id:1,
+      userinfo:{},
+      touserinfo:{},
+      message: [],
+      newmessage:"",
+      // messages: [
+      //   {
+      //     type: MESSAGE_TYPE.TIME,
+      //     data: '',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.RED_PACKET,
+      //     state: AUDIO_STATE.NORMAL,
+      //     mode: RED_PACKET_MODE.MULTIPLE,
+      //     data: {
+      //       money: 5.11,
+      //       title: '大吉大利',
+      //       state: '未领取'
+      //     },
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.RED_PACKET,
+      //     state: AUDIO_STATE.NORMAL,
+      //     mode: RED_PACKET_MODE.SINGLE,
+      //     data: {
+      //       money: 5.11,
+      //       title: '大吉大利',
+      //       state: '已过期'
+      //     },
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: 1,
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.MEME,
+      //     state: AUDIO_STATE.NORMAL,
+      //     data: new URL('../../../assets/img/poster/1.jpg', import.meta.url).href,
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     },
+      //     loved: [
+      //       {
+      //         id: 2,
+      //         avatar: '../../assets/img/icon/head-image.jpg'
+      //       },
+      //       {
+      //         id: 2,
+      //         avatar: '../../assets/img/icon/head-image.jpg'
+      //       },
+      //     ]
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.IMAGE,
+      //     state: AUDIO_STATE.NORMAL,
+      //     data: new URL('../../../assets/img/poster/1.jpg', import.meta.url).href,
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: 1,
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.IMAGE,
+      //     state: AUDIO_STATE.NORMAL,
+      //     data: new URL('../../../assets/img/poster/1.jpg', import.meta.url).href,
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     },
+      //     readState: READ_STATE.ARRIVED
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.VIDEO_CALL,
+      //     state: CALL_STATE.REJECT,
+      //     data: '2021-01-02 21:44',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.VIDEO_CALL,
+      //     state: CALL_STATE.RESOLVE,
+      //     data: '2021-01-02 21:44',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.VIDEO_CALL,
+      //     state: CALL_STATE.NONE,
+      //     data: '2021-01-02 21:44',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.AUDIO_CALL,
+      //     state: CALL_STATE.REJECT,
+      //     data: '2021-01-02 21:44',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.AUDIO_CALL,
+      //     state: CALL_STATE.RESOLVE,
+      //     data: '2021-01-02 21:44',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.AUDIO_CALL,
+      //     state: CALL_STATE.NONE,
+      //     data: '2021-01-02 21:44',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.AUDIO,
+      //     state: AUDIO_STATE.NORMAL,
+      //     data: {
+      //       duration: 5,
+      //       src: '',
+      //     },
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '1',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.AUDIO,
+      //     state: AUDIO_STATE.NORMAL,
+      //     data: {
+      //       duration: 10,
+      //       src: '',
+      //     },
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.TEXT,
+      //     data: '又在刷抖音',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.TEXT,
+      //     data: '我昨天@你那个视频发给我下',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.TEXT,
+      //     data: '我找不到了',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '1',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.TEXT,
+      //     data: '我也找不到了我也找不到了我也找不到了我也找不到了我也找不到了我也找不到了我也找不到了我也找不到了',
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.DOUYIN_VIDEO,
+      //     state: VIDEO_STATE.VALID,
+      //     data: {
+      //       poster: new URL('../../../assets/img/poster/3.jpg', import.meta.url).href,
+      //       author: {
+      //         name: 'safasdfassafasdfassafasdfassafasdfas',
+      //         avatar: new URL('../../../assets/img/icon/head-image.jpeg', import.meta.url).href
+      //       },
+      //       title: '服了asd'
+      //     },
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '1',
+      //       avatar: '../../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      //   {
+      //     type: MESSAGE_TYPE.VIDEO,
+      //     state: VIDEO_STATE.VALID,
+      //     data: {
+      //       poster: new URL('../../../assets/img/poster/3.jpg', import.meta.url).href,
+      //     },
+      //     time: '2021-01-02 21:21',
+      //     user: {
+      //       id: '93864497380',
+      //       avatar: '../../../assets/img/icon/head-image.jpg'
+      //     }
+      //   },
+      // ],
       typing: false,
       loading: false,
       opening: false,
@@ -459,14 +437,77 @@ export default {
     isTyping() {
       return this.typing || this.isExpand
     },
-    ...mapState(['userinfo'])
+    // ...mapState(['userinfo'])
   },
   created() {
   },
   mounted() {
     this.scrollBottom()
+    this.to_user_id = this.$route.query.to_user_id
+    this.getData()
   },
   methods: {
+    async send(){
+      let res = await request.post(
+          "/message/action/",
+          {},
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+              to_user_id: this.to_user_id,
+              content:this.newmessage,
+              action_type:1
+            }
+          }
+      );
+      let messageres = await request.get(
+          "/message/chat/",
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+              to_user_id: this.to_user_id,
+            },
+          },
+          {}
+      );
+      console.log(messageres)
+      this.message = messageres.data.message_list
+    },
+    async getData() {
+      let messageres = await request.get(
+          "/message/chat/",
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+              to_user_id: this.to_user_id,
+            },
+          },
+          {}
+      );
+      // console.log(messageres)
+      this.message = messageres.data.message_list
+      let res = await request.get(
+          "/me/my",
+          {
+            params: {
+              user_id: this.$store.state.user_id,
+            },
+          },
+          {}
+      );
+      this.userinfo=res.data.user
+      let tores = await request.get(
+          "/me/my",
+          {
+            params: {
+              user_id: this.to_user_id,
+            },
+          },
+          {}
+      );
+      this.touserinfo=tores.data.user
+      console.log(this.touserinfo)
+    },
     scrollBottom() {
       nextTick(() => {
         let wrapper = this.$refs.msgWrapper
@@ -714,8 +755,7 @@ export default {
     position: fixed;
     font-size: 12rem;
     border-radius: 6rem;
-    //padding: 1rem;
-    background: rgb(55, 58, 67);
+  //padding: 1rem; background: rgb(55, 58, 67);
     display: flex;
 
     .options {

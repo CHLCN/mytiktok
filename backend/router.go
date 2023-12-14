@@ -32,16 +32,16 @@ func initRouter(r *gin.Engine) {
 	// 互动接口
 	apiRouter.POST("/favorite/action/", jwt.AuthWithoutLogin(), controller.FavoriteAction)
 	apiRouter.GET("/me/like", jwt.AuthWithoutLogin(), controller.FavoriteList)
-	apiRouter.POST("/comment/action/", jwt.Auth(), controller.CommentAction)
+	apiRouter.POST("/comment/action/", jwt.AuthWithoutLogin(), controller.CommentAction)
 	apiRouter.GET("/comment/list/", jwt.AuthWithoutLogin(), controller.CommentList)
 
 	// 社交接口
 	apiRouter.POST("/relation/action/", jwt.Auth(), controller.RelationAction)
 	apiRouter.GET("/relation/follow/list/", jwt.AuthWithoutLogin(), controller.FollowList)
 	apiRouter.GET("/relation/follower/list/", jwt.AuthWithoutLogin(), controller.FollowerList)
-	apiRouter.GET("/relation/friend/list/", jwt.Auth(), controller.FriendList)
-	apiRouter.GET("/message/chat/", jwt.Auth(), controller.MessageChat)
-	apiRouter.POST("/message/action/", jwt.Auth(), controller.MessageAction)
+	apiRouter.GET("/relation/friend/list/", jwt.AuthWithoutLogin(), controller.FriendList)
+	apiRouter.GET("/message/chat/", jwt.AuthWithoutLogin(), controller.MessageChat)
+	apiRouter.POST("/message/action/", jwt.AuthWithoutLogin(), controller.MessageAction)
 
 	// 测试接口
 	apiRouter.POST("/test/", jwt.Auth(), controller.Test)

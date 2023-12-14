@@ -22,7 +22,8 @@ type CommentActionResponse struct {
 // CommentAction no practical effect, just check if token is valid
 func CommentAction(c *gin.Context) {
 	// 获取userId
-	userId := c.GetInt64("userId")
+	strUserId := c.Query("user_id")
+	userId, _ := strconv.ParseInt(strUserId, 10, 64)
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusOK, CommentActionResponse{
@@ -93,7 +94,6 @@ func CommentAction(c *gin.Context) {
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
 	strUserId := c.Query("user_id")
-	//likeCnt:=dao.VideoLikedCount()
 	userId, _ := strconv.ParseInt(strUserId, 10, 64)
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	if err != nil {

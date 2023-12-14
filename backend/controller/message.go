@@ -20,7 +20,7 @@ func MessageAction(c *gin.Context) {
 	toUserId := c.Query("to_user_id")
 	content := c.Query("content")
 	actionType := c.Query("action_type")
-	loginUserId := c.GetInt64("userId")
+	loginUserId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	targetUserId, err := strconv.ParseInt(toUserId, 10, 64)
 	targetActionType, err1 := strconv.ParseInt(actionType, 10, 64)
 	if err != nil || err1 != nil {
@@ -37,16 +37,18 @@ func MessageAction(c *gin.Context) {
 
 // MessageChat 消息列表
 func MessageChat(c *gin.Context) {
-	loginUserId := c.GetInt64("userId")
+	loginUserId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	//loginUserId := c.GetInt64("userId")
 	toUserId := c.Query("to_user_id")
-	preMsgTime := c.Query("pre_msg_time")
-	log.Println("preMsgTime", preMsgTime)
-	covPreMsgTime, err := strconv.ParseInt(preMsgTime, 10, 64)
-	if err != nil {
-		log.Println("preMsgTime 参数错误")
-		return
-	}
-	latestTime := time.Unix(covPreMsgTime, 0)
+	//preMsgTime := c.Query("pre_msg_time")
+	//log.Println("preMsgTime", preMsgTime)
+	//covPreMsgTime, err := strconv.ParseInt(preMsgTime, 10, 64)
+	//if err != nil {
+	//	log.Println("preMsgTime 参数错误")
+	//	return
+	//}
+	//latestTime := time.Unix(covPreMsgTime, 0)
+	latestTime := time.Unix(0, 0)
 	targetUserId, err := strconv.ParseInt(toUserId, 10, 64)
 	if err != nil {
 		log.Println("toUserId 参数错误")

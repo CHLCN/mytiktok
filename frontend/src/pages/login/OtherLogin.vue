@@ -137,7 +137,7 @@ export default {
           }
         );
         this.$store.state.vcode = res.data.status_msg;
-        console.log(this.$store.state.vcode);
+        console.log(res.data.status_msg);
         this.$store.state.user_id = res.data.user_id;
 
         setTimeout(() => {
